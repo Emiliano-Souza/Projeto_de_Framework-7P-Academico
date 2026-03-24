@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: epi_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  django:
+    build: .
+    container_name: epi_django
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

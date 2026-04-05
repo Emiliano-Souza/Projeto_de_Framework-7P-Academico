@@ -55,5 +55,7 @@ Essa camada concentra validacoes explicitas de negocio, como:
 - devolucao limitada ao saldo pendente da entrega
 - baixa limitada ao saldo ainda em aberto da entrega
 - baixa com motivo operacional obrigatorio
+- baixa nao devolve quantidade ao estoque do lote
+- baixa gera movimentacao especifica com motivo associado
 
 Com isso, a regra operacional fica mais visivel fora do model e a arquitetura fica mais preparada para views, formularios e evolucao futura.

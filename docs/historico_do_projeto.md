@@ -178,5 +178,13 @@
 - preparacao da interface com labels, help texts e campos padronizados
 - ampliacao dos testes para validar a estrutura do novo formulario
 
+## Etapa 27 - Servico de Baixa
+
+- criacao do servico para registrar baixa de EPI
+- validacao de entrega existente, quantidade positiva, motivo obrigatorio e saldo em aberto
+- garantia de que a baixa nao aumenta o estoque do lote
+- geracao de movimentacao do tipo `baixa` com motivo operacional
+- ampliacao dos testes para cobrir baixas validas e invalidas
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

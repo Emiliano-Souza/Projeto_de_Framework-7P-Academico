@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 from epi.models import EntregaEPI, MovimentacaoEstoque
-from epi.services.entregas import registrar_devolucao_epi, registrar_entrega_epi
+from epi.services.entregas import registrar_baixa_epi, registrar_devolucao_epi, registrar_entrega_epi
 from epi.tests.base import BaseModelTestCase
 
 
@@ -304,4 +304,95 @@ class EntregaEPIServiceTests(BaseModelTestCase):
                 entrega_id=entrega.pk,
                 quantidade_devolvida=3,
                 usuario_devolucao=self.user,
+            )
+
+    def test_service_registra_baixa_com_sucesso_sem_alterar_estoque_do_lote(self):
+        entrega = registrar_entrega_epi(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=4,
+            usuario_entrega=self.user,
+        )
+
+        registrar_baixa_epi(
+            entrega_id=entrega.pk,
+            quantidade_baixada=2,
+            usuario_baixa=self.user,
+            motivo_baixa="danificado",
+            observacao="Item sem condicoes de reutilizacao",
+        )
+
+        self.lote.refresh_from_db()
+        entrega.refresh_from_db()
+        movimentacao = MovimentacaoEstoque.objects.filter(
+            entrega_epi=entrega,
+            tipo_movimento=MovimentacaoEstoque.TipoMovimento.BAIXA,
+        ).get()
+
+        self.assertEqual(self.lote.quantidade_disponivel, 6)
+        self.assertEqual(entrega.quantidade_baixada, 2)
+        self.assertEqual(movimentacao.quantidade_antes, 6)
+        self.assertEqual(movimentacao.quantidade_depois, 6)
+        self.assertIn("[danificado]", entrega.observacao)
+
+    def test_service_bloqueia_baixa_com_quantidade_nao_positiva(self):
+        entrega = registrar_entrega_epi(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=2,
+            usuario_entrega=self.user,
+        )
+
+        with self.assertRaises(ValidationError):
+            registrar_baixa_epi(
+                entrega_id=entrega.pk,
+                quantidade_baixada=0,
+                usuario_baixa=self.user,
+                motivo_baixa="extraviado",
+            )
+
+    def test_service_bloqueia_baixa_sem_motivo(self):
+        entrega = registrar_entrega_epi(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=2,
+            usuario_entrega=self.user,
+        )
+
+        with self.assertRaises(ValidationError):
+            registrar_baixa_epi(
+                entrega_id=entrega.pk,
+                quantidade_baixada=1,
+                usuario_baixa=self.user,
+                motivo_baixa="",
+            )
+
+    def test_service_bloqueia_baixa_de_entrega_inexistente(self):
+        with self.assertRaises(ValidationError):
+            registrar_baixa_epi(
+                entrega_id=999999,
+                quantidade_baixada=1,
+                usuario_baixa=self.user,
+                motivo_baixa="extraviado",
+            )
+
+    def test_service_bloqueia_baixa_maior_que_saldo_em_aberto(self):
+        entrega = registrar_entrega_epi(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=4,
+            usuario_entrega=self.user,
+        )
+        registrar_devolucao_epi(
+            entrega_id=entrega.pk,
+            quantidade_devolvida=2,
+            usuario_devolucao=self.user,
+        )
+
+        with self.assertRaises(ValidationError):
+            registrar_baixa_epi(
+                entrega_id=entrega.pk,
+                quantidade_baixada=3,
+                usuario_baixa=self.user,
+                motivo_baixa="descartado",
             )

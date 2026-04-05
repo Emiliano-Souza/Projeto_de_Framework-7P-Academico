@@ -47,5 +47,13 @@
 - constraints para garantir coerencia entre quantidade entregue e devolvida
 - exposicao de `entrega_epi` no admin do Django
 
+## Etapa 8 - Auditoria de Estoque
+
+- implementacao da tabela `movimentacao_estoque`
+- registro do tipo de movimento, saldo anterior e saldo posterior
+- relacionamento com lote, entrega, funcionario e usuario do sistema
+- constraints basicas para integridade dos registros
+- exposicao de `movimentacao_estoque` no admin do Django
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

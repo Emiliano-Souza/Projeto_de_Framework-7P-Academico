@@ -183,3 +183,69 @@ class EntregaEPI(models.Model):
 
     def __str__(self):
         return f"{self.funcionario.nome_completo} - {self.epi_lote.epi.nome}"
+
+
+class MovimentacaoEstoque(models.Model):
+    class TipoMovimento(models.IntegerChoices):
+        ENTRADA = 1, "Entrada"
+        ENTREGA = 2, "Entrega"
+        DEVOLUCAO = 3, "Devolucao"
+        AJUSTE = 4, "Ajuste"
+        DESCARTE = 5, "Descarte"
+        PERDA = 6, "Perda"
+
+    id = models.BigAutoField(primary_key=True)
+    epi_lote = models.ForeignKey(
+        EPILote,
+        on_delete=models.PROTECT,
+        related_name="movimentacoes_estoque",
+    )
+    tipo_movimento = models.PositiveSmallIntegerField(choices=TipoMovimento.choices)
+    quantidade = models.PositiveIntegerField()
+    quantidade_antes = models.PositiveIntegerField()
+    quantidade_depois = models.PositiveIntegerField()
+    funcionario = models.ForeignKey(
+        Funcionario,
+        on_delete=models.PROTECT,
+        related_name="movimentacoes_estoque",
+        null=True,
+        blank=True,
+    )
+    entrega_epi = models.ForeignKey(
+        EntregaEPI,
+        on_delete=models.PROTECT,
+        related_name="movimentacoes_estoque",
+        null=True,
+        blank=True,
+    )
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="movimentacoes_estoque_registradas",
+    )
+    motivo = models.CharField(max_length=100, null=True, blank=True)
+    observacao = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        db_table = "movimentacao_estoque"
+        ordering = ["-created_at", "-id"]
+        verbose_name = "Movimentacao de Estoque"
+        verbose_name_plural = "Movimentacoes de Estoque"
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(quantidade__gt=0),
+                name="ck_mov_estoque_quantidade_gt_0",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(quantidade_antes__gte=0),
+                name="ck_mov_estoque_quantidade_antes_gte_0",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(quantidade_depois__gte=0),
+                name="ck_mov_estoque_quantidade_depois_gte_0",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.get_tipo_movimento_display()} - {self.epi_lote.numero_lote}"

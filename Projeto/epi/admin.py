@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import EPI, EPILote, EntregaEPI, Funcionario, Setor
+from .models import EPI, EPILote, EntregaEPI, Funcionario, MovimentacaoEstoque, Setor
 
 
 @admin.register(Setor)
@@ -60,4 +60,23 @@ class EntregaEPIAdmin(admin.ModelAdmin):
         "funcionario__nome_completo",
         "epi_lote__numero_lote",
         "epi_lote__epi__nome",
+    )
+
+
+@admin.register(MovimentacaoEstoque)
+class MovimentacaoEstoqueAdmin(admin.ModelAdmin):
+    list_display = (
+        "tipo_movimento",
+        "epi_lote",
+        "quantidade",
+        "quantidade_antes",
+        "quantidade_depois",
+        "created_at",
+    )
+    list_filter = ("tipo_movimento", "created_at")
+    search_fields = (
+        "epi_lote__numero_lote",
+        "epi_lote__epi__nome",
+        "funcionario__nome_completo",
+        "motivo",
     )

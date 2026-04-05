@@ -176,10 +176,44 @@ Decisoes aplicadas:
 - constraint para garantir `quantidade_devolvida <= quantidade_entregue`
 - nome fisico da tabela definido como `entrega_epi`
 
-## Proximas Etapas Planejadas
-As proximas tabelas previstas sao:
+## Sexta Etapa Implementada
+A sexta tabela implementada foi `movimentacao_estoque`.
 
-1. `movimentacao_estoque`
+### Tabela `movimentacao_estoque`
+Finalidade:
+Registrar cada alteracao relevante no estoque para fins de auditoria, historico e rastreabilidade.
+
+Campos atuais:
+
+- `id`
+- `epi_lote_id`
+- `tipo_movimento`
+- `quantidade`
+- `quantidade_antes`
+- `quantidade_depois`
+- `funcionario_id`
+- `entrega_epi_id`
+- `usuario_id`
+- `motivo`
+- `observacao`
+- `created_at`
+
+Decisoes aplicadas:
+
+- `id` com `BigAutoField`
+- relacionamento com `epi_lote` usando `PROTECT`
+- relacionamento opcional com `funcionario`
+- relacionamento opcional com `entrega_epi`
+- uso de `auth_user` do Django para auditoria do responsavel
+- `created_at` indexado
+- `tipo_movimento` implementado com `choices`
+- constraint para garantir `quantidade > 0`
+- constraint para garantir `quantidade_antes >= 0`
+- constraint para garantir `quantidade_depois >= 0`
+- nome fisico da tabela definido como `movimentacao_estoque`
+
+## Proximas Etapas Planejadas
+As tabelas principais previstas para a modelagem inicial foram concluidas.
 
 ## Principios de Modelagem
 Os principios adotados para a modelagem sao:

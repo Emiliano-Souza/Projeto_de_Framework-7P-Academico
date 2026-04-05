@@ -43,3 +43,27 @@ class Funcionario(models.Model):
 
     def __str__(self):
         return f"{self.nome_completo} ({self.matricula})"
+
+
+class EPI(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    codigo_interno = models.CharField(max_length=30, unique=True)
+    nome = models.CharField(max_length=120, db_index=True)
+    descricao = models.TextField(null=True, blank=True)
+    categoria = models.CharField(max_length=50, null=True, blank=True)
+    fabricante = models.CharField(max_length=100, null=True, blank=True)
+    numero_ca = models.CharField(max_length=30, null=True, blank=True, db_index=True)
+    controla_tamanho = models.BooleanField(default=False)
+    estoque_minimo = models.PositiveIntegerField(default=0)
+    ativo = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "epi"
+        ordering = ["nome"]
+        verbose_name = "EPI"
+        verbose_name_plural = "EPIs"
+
+    def __str__(self):
+        return f"{self.codigo_interno} - {self.nome}"

@@ -75,13 +75,45 @@ Decisoes aplicadas:
 - timestamps de criacao e atualizacao
 - nome fisico da tabela definido como `funcionario`
 
+## Terceira Etapa Implementada
+A terceira tabela implementada foi `epi`.
+
+### Tabela `epi`
+Finalidade:
+Representar o cadastro do item de EPI, sem concentrar o saldo fisico real do estoque.
+
+Campos atuais:
+
+- `id`
+- `codigo_interno`
+- `nome`
+- `descricao`
+- `categoria`
+- `fabricante`
+- `numero_ca`
+- `controla_tamanho`
+- `estoque_minimo`
+- `ativo`
+- `created_at`
+- `updated_at`
+
+Decisoes aplicadas:
+
+- `id` com `BigAutoField`
+- `codigo_interno` obrigatorio e unico
+- `nome` indexado para busca
+- `numero_ca` indexado
+- `estoque_minimo` como parametro de alerta, nao como saldo real
+- `ativo` para desativacao logica
+- timestamps de criacao e atualizacao
+- nome fisico da tabela definido como `epi`
+
 ## Proximas Etapas Planejadas
 As proximas tabelas previstas sao:
 
-1. `epi`
-2. `epi_lote`
-3. `entrega_epi`
-4. `movimentacao_estoque`
+1. `epi_lote`
+2. `entrega_epi`
+3. `movimentacao_estoque`
 
 ## Principios de Modelagem
 Os principios adotados para a modelagem sao:

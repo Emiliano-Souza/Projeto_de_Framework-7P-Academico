@@ -25,5 +25,12 @@
 - uso de `PROTECT` para preservar integridade historica
 - exposicao de `funcionario` no admin do Django
 
+## Etapa 5 - Cadastro de EPIs
+
+- implementacao da tabela `epi`
+- separacao entre cadastro do item e estoque fisico por lote
+- indexacao dos campos mais relevantes para busca
+- exposicao de `epi` no admin do Django
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

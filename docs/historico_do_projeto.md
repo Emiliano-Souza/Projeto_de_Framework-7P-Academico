@@ -103,5 +103,12 @@
 - centralizacao inicial de validacoes explicitas de negocio
 - preparacao da arquitetura para formularios, views e fluxo web
 
+## Etapa 17 - Formulario de Entrega
+
+- criacao do formulario de entrega de EPI
+- filtragem de funcionarios ativos
+- filtragem de lotes com saldo disponivel
+- testes iniciais do formulario
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

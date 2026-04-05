@@ -110,5 +110,12 @@
 - filtragem de lotes com saldo disponivel
 - testes iniciais do formulario
 
+## Etapa 18 - Fluxo Web Inicial de Entrega
+
+- criacao de view protegida por autenticacao
+- criacao da rota da app para registrar entrega
+- criacao de template inicial do fluxo
+- integracao do fluxo web com o service de entrega
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

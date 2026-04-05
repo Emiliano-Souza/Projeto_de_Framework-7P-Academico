@@ -13,6 +13,7 @@ A documentação técnica do projeto está organizada na pasta `docs/`.
 - `docs/configuracao_ambiente.md`: como o ambiente local funciona
 - `docs/banco_de_dados.md`: modelagem do banco, decisões e evolução das tabelas
 - `docs/regras_de_negocio.md`: regras funcionais e princípios de integridade
+- `docs/testes.md`: estratégia de testes, cobertura atual e como executar
 - `docs/decisoes_tecnicas.md`: justificativas das escolhas técnicas
 - `docs/historico_do_projeto.md`: evolução do projeto por etapas
 

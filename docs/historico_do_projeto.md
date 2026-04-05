@@ -92,5 +92,10 @@
 - criacao de pasta `tests/` para o dominio `epi`
 - reutilizacao de base comum de dados para manter a suite legivel
 
+## Etapa 15 - Documentacao dos Testes
+
+- criacao de documento tecnico para explicar estrategia e cobertura da suite
+- integracao da documentacao de testes ao indice principal do projeto
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

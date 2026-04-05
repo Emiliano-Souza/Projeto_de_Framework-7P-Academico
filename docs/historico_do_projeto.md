@@ -86,5 +86,11 @@
 - testes para comportamento de `PROTECT`
 - testes para validacao basica de `movimentacao_estoque`
 
+## Etapa 14 - Organizacao da Suite de Testes
+
+- separacao dos testes por responsabilidade
+- criacao de pasta `tests/` para o dominio `epi`
+- reutilizacao de base comum de dados para manter a suite legivel
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

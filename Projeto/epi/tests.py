@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.db.models import ProtectedError
 from django.test import TestCase
 from django.utils import timezone
 
@@ -64,6 +65,49 @@ class EPILoteModelTests(BaseModelTestCase):
 
         with self.assertRaises(ValidationError):
             lote.full_clean()
+
+
+class CadastroModelTests(BaseModelTestCase):
+    def test_nao_permite_nome_de_setor_duplicado(self):
+        setor = Setor(nome="Producao")
+
+        with self.assertRaises(ValidationError):
+            setor.full_clean()
+
+    def test_nao_permite_matricula_duplicada(self):
+        funcionario = Funcionario(
+            matricula="F001",
+            nome_completo="Joao Pereira",
+            setor=self.setor,
+        )
+
+        with self.assertRaises(ValidationError):
+            funcionario.full_clean()
+
+    def test_nao_permite_codigo_interno_duplicado(self):
+        epi = EPI(
+            codigo_interno="EPI-001",
+            nome="Luva de Seguranca",
+        )
+
+        with self.assertRaises(ValidationError):
+            epi.full_clean()
+
+    def test_protect_impede_excluir_setor_com_funcionario(self):
+        with self.assertRaises(ProtectedError):
+            self.setor.delete()
+
+    def test_protect_impede_excluir_lote_com_entrega(self):
+        EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=1,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+        )
+
+        with self.assertRaises(ProtectedError):
+            self.lote.delete()
 
 
 class EntregaEPIModelTests(BaseModelTestCase):
@@ -229,3 +273,31 @@ class EntregaEPIModelTests(BaseModelTestCase):
 
         self.lote.refresh_from_db()
         self.assertEqual(self.lote.quantidade_disponivel, 10)
+
+
+class MovimentacaoEstoqueModelTests(BaseModelTestCase):
+    def test_nao_permite_movimentacao_com_quantidade_zero(self):
+        movimentacao = MovimentacaoEstoque(
+            epi_lote=self.lote,
+            tipo_movimento=MovimentacaoEstoque.TipoMovimento.AJUSTE,
+            quantidade=0,
+            quantidade_antes=10,
+            quantidade_depois=10,
+            usuario=self.user,
+        )
+
+        with self.assertRaises(ValidationError):
+            movimentacao.full_clean()
+
+    def test_nao_permite_movimentacao_com_saldo_negativo(self):
+        movimentacao = MovimentacaoEstoque(
+            epi_lote=self.lote,
+            tipo_movimento=MovimentacaoEstoque.TipoMovimento.AJUSTE,
+            quantidade=1,
+            quantidade_antes=0,
+            quantidade_depois=-1,
+            usuario=self.user,
+        )
+
+        with self.assertRaises(ValidationError):
+            movimentacao.full_clean()

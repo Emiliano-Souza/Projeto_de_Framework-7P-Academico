@@ -80,5 +80,11 @@
 - testes para consumo acumulado do mesmo lote
 - testes para restauracao total de saldo
 
+## Etapa 13 - Testes de Integridade Estrutural
+
+- testes para unicidade de setor, funcionario e EPI
+- testes para comportamento de `PROTECT`
+- testes para validacao basica de `movimentacao_estoque`
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

@@ -186,5 +186,13 @@
 - geracao de movimentacao do tipo `baixa` com motivo operacional
 - ampliacao dos testes para cobrir baixas validas e invalidas
 
+## Etapa 28 - Fluxo Web de Baixa
+
+- criacao da view protegida por autenticacao para baixa de EPI
+- criacao da rota dedicada ao fluxo de baixa
+- criacao do template inicial da tela de baixa
+- exibicao de mensagens de sucesso e erro no fluxo web
+- ampliacao dos testes para validar acesso, renderizacao e submissao da baixa
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

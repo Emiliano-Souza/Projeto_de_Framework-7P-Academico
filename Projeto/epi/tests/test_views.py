@@ -135,6 +135,75 @@ class RegistrarDevolucaoViewTests(BaseModelTestCase):
         )
 
 
+class RegistrarBaixaViewTests(BaseModelTestCase):
+    def setUp(self):
+        super().setUp()
+        self.entrega = EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=4,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+        )
+
+    def test_view_exige_autenticacao(self):
+        response = self.client.get(reverse("epi:registrar_baixa"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login/", response.url)
+
+    def test_view_renderiza_formulario_para_usuario_logado(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("epi:registrar_baixa"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Registrar Baixa de EPI")
+        self.assertContains(response, "Dados da baixa")
+        self.assertContains(response, "Voltar para devolucoes")
+
+    def test_view_registra_baixa_com_sucesso(self):
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("epi:registrar_baixa"),
+            data={
+                "entrega": self.entrega.pk,
+                "quantidade_baixada": 2,
+                "motivo_baixa": "danificado",
+                "observacao": "Baixa via view",
+            },
+            follow=True,
+        )
+
+        self.entrega.refresh_from_db()
+        self.lote.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Baixa registrada com sucesso.")
+        self.assertEqual(self.entrega.quantidade_baixada, 2)
+        self.assertEqual(self.lote.quantidade_disponivel, 6)
+
+    def test_view_mostra_erro_para_baixa_maior_que_saldo_em_aberto(self):
+        self.client.force_login(self.user)
+
+        response = self.client.post(
+            reverse("epi:registrar_baixa"),
+            data={
+                "entrega": self.entrega.pk,
+                "quantidade_baixada": 5,
+                "motivo_baixa": "extraviado",
+                "observacao": "Tentativa invalida",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            "A quantidade baixada nao pode ser maior que o saldo em aberto da entrega.",
+        )
+
+
 class AuthViewTests(TestCase):
     def test_login_view_renderiza(self):
         response = self.client.get(reverse("login"))

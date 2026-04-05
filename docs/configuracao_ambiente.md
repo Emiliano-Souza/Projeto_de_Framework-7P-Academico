@@ -33,6 +33,34 @@ No uso padrao com Docker Compose:
 - `DB_HOST=db`
 - `DB_PORT=5432`
 
+## Rotina Recomendada de Inicializacao
+
+Para subir o ambiente local e evitar divergencia entre codigo e banco:
+
+```powershell
+cd .\Projeto
+docker compose up --build
+docker compose exec django python manage.py migrate
+docker compose exec django python manage.py test
+```
+
+Se for acessar telas protegidas por login:
+
+```powershell
+docker compose exec django python manage.py createsuperuser
+```
+
+## Fluxos Web Disponiveis
+
+Com o ambiente rodando e usuario autenticado, as rotas principais atuais sao:
+
+- `http://localhost:8000/entregas/nova/`
+- `http://localhost:8000/devolucoes/nova/`
+- `http://localhost:8000/baixas/nova/`
+- `http://localhost:8000/movimentacoes/`
+- `http://localhost:8000/accounts/login/`
+- `http://localhost:8000/admin/`
+
 ## Healthcheck do Banco
 O servico do PostgreSQL possui um `healthcheck` com `pg_isready`.
 
@@ -40,3 +68,11 @@ Esse teste serve para verificar se o banco esta realmente pronto para aceitar co
 
 ## Observacao Importante
 O `healthcheck` melhora a observabilidade do servico, mas a protecao pratica principal do ambiente ainda esta no `entrypoint.sh`, que espera o banco responder antes de iniciar o Django.
+
+## Diferenca Entre Banco de Teste e Banco Real
+
+Os testes do Django usam um banco temporario criado automaticamente. Por isso:
+
+- testes passando nao significam que o banco real do container ja recebeu as migracoes mais recentes
+
+Quando houver mudanca de model ou migracao nova, o passo `python manage.py migrate` no container real continua obrigatorio.

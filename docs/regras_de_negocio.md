@@ -38,15 +38,16 @@ Essa regra evita um estado invalido de estoque ja na camada de banco e tambem na
 - um EPI pode possuir varios lotes
 - entregas apontam para funcionario e lote
 - movimentacoes registram alteracoes no estoque
-- operacoes criticas de entrega e devolucao usam transacao
-- nao e permitido reduzir retroativamente quantidade entregue ou devolvida
+- operacoes criticas de entrada, entrega, devolucao e baixa usam transacao
+- nao e permitido reduzir retroativamente quantidade entregue, devolvida ou baixada
 - o status da entrega acompanha automaticamente o nivel de devolucao
 
 ## Direcao Arquitetural Atual
-A aplicacao passou a adotar uma camada de servico para os fluxos de entrega e devolucao.
+A aplicacao passou a adotar uma camada de servico para os fluxos operacionais principais do estoque.
 
 Essa camada concentra validacoes explicitas de negocio, como:
 
+- quantidade recebida valida na entrada de lote
 - funcionario ativo
 - lote nao vencido
 - saldo suficiente para a entrega

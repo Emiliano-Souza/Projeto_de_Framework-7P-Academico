@@ -232,5 +232,13 @@
 - exibicao dos principais campos de rastreabilidade em tabela
 - ampliacao dos testes para validar acesso, estado vazio e exibicao do historico
 
+## Etapa 34 - Revisao Geral da Documentacao
+
+- alinhamento da arquitetura ao estado atual do projeto
+- atualizacao da configuracao do ambiente com rotas e rotina real de uso
+- ampliacao das decisoes tecnicas com a camada de service e rastreabilidade
+- ajuste das regras de negocio para refletir entrada, entrega, devolucao e baixa
+- sincronizacao final da documentacao com os fluxos e telas atuais
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

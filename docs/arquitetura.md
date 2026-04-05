@@ -6,6 +6,15 @@ O sistema foi concebido para gerenciar a entrega de Equipamentos de Protecao Ind
 ## Visao Geral
 O projeto utiliza Django como framework principal e PostgreSQL como banco de dados relacional. A aplicacao e o banco sao executados em containers separados, orquestrados por Docker Compose.
 
+No estado atual, a aplicacao ja possui:
+
+- modelagem principal do dominio implementada
+- camada de service para operacoes de estoque
+- autenticacao basica com Django auth
+- fluxos web de entrega, devolucao e baixa
+- tela de historico de movimentacoes
+- suite de testes automatizados
+
 ## Estrutura Atual
 Atualmente o projeto possui dois servicos principais:
 
@@ -35,9 +44,42 @@ Fora do Docker, a porta publicada do banco foi alterada para `55432`, reduzindo 
 A organizacao atual do codigo e composta por:
 
 - `Projeto/config`: configuracoes principais do Django
-- `Projeto/epi`: app de dominio inicial do sistema
+- `Projeto/epi`: app de dominio do sistema
 - `Projeto/docker-compose.yml`: definicao dos servicos do ambiente
 - `Projeto/entrypoint.sh`: script de inicializacao da aplicacao
 
+Dentro da app `epi`, a organizacao principal esta distribuida em:
+
+- `models.py`: entidades e integridade estrutural
+- `forms.py`: formularios operacionais
+- `services/`: regra de negocio e orquestracao
+- `views/`: camada HTTP
+- `urls/`: agrupamento de rotas por fluxo
+- `templates/epi/`: telas HTML dos fluxos
+- `tests/`: cobertura automatizada por responsabilidade
+
+## Componentes Funcionais Atuais
+
+Os principais componentes funcionais implementados hoje sao:
+
+- entrada de lote com rastreabilidade
+- entrega de EPI
+- devolucao de EPI
+- baixa de EPI
+- historico de movimentacoes de estoque
+
+Esses fluxos compartilham a mesma base tecnica:
+
+- `EntregaEPI` como entidade operacional central
+- `MovimentacaoEstoque` como trilha de auditoria
+- camada de service para coordenar persistencia e regras
+
 ## Direcao Arquitetural
-O projeto esta sendo construido por etapas. A intencao e consolidar primeiro a camada de banco de dados e a estrutura do dominio, e depois evoluir para regras operacionais, telas e fluxos de uso.
+O projeto foi construido por etapas: primeiro banco e dominio, depois regras operacionais, e por fim fluxos web.
+
+A direcao atual prioriza:
+
+- consolidar a rastreabilidade do estoque
+- manter a regra critica fora das views
+- usar o Django de forma organizada por camadas
+- documentar e testar cada evolucao relevante

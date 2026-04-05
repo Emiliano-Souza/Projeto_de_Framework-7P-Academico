@@ -292,6 +292,7 @@ O projeto ja registra entrega, devolucao e baixa, mas ainda nao tem fluxo web de
 - `Projeto/epi/views/entregas.py`
 - `Projeto/epi/views/devolucoes.py`
 - `Projeto/epi/views/baixas.py`
+- `Projeto/epi/views/movimentacoes.py`
 - `Projeto/epi/services/entregas.py`
 - `Projeto/epi/tests/test_entrada_saida.py`
 - `Projeto/epi/tests/test_views.py`

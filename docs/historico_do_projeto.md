@@ -224,5 +224,13 @@
 - ampliacao dos testes para validar entrada rastreavel de lote
 - atualizacao da documentacao tecnica para refletir a rastreabilidade da entrada
 
+## Etapa 33 - Tela de Historico de Movimentacoes
+
+- criacao da view protegida por autenticacao para listar movimentacoes
+- criacao da rota dedicada ao historico do estoque
+- criacao do template inicial da listagem de movimentacoes
+- exibicao dos principais campos de rastreabilidade em tabela
+- ampliacao dos testes para validar acesso, estado vazio e exibicao do historico
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

@@ -3,7 +3,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from epi.models import EntregaEPI, Setor
+from epi.models import EntregaEPI, MovimentacaoEstoque, Setor
+from epi.services.lotes import registrar_entrada_lote
 from epi.tests.base import BaseModelTestCase
 
 
@@ -202,6 +203,42 @@ class RegistrarBaixaViewTests(BaseModelTestCase):
             response,
             "A quantidade baixada nao pode ser maior que o saldo em aberto da entrega.",
         )
+
+
+class ListarMovimentacoesViewTests(BaseModelTestCase):
+    def test_view_exige_autenticacao(self):
+        response = self.client.get(reverse("epi:listar_movimentacoes"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login/", response.url)
+
+    def test_view_renderiza_historico_para_usuario_logado(self):
+        registrar_entrada_lote(
+            epi=self.epi,
+            numero_lote="L200",
+            quantidade_recebida=7,
+            usuario_responsavel=self.user,
+            observacao="Entrada para teste de historico",
+        )
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("epi:listar_movimentacoes"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Historico de Movimentacoes de Estoque")
+        self.assertContains(response, "Historico operacional")
+        self.assertContains(response, "Entrada")
+        self.assertContains(response, "L200")
+        self.assertContains(response, self.user.username)
+
+    def test_view_mostra_estado_vazio_quando_nao_existe_movimentacao(self):
+        MovimentacaoEstoque.objects.all().delete()
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse("epi:listar_movimentacoes"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Nenhuma movimentacao foi registrada ate o momento.")
 
 
 class AuthViewTests(TestCase):

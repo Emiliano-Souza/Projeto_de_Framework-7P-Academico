@@ -35,6 +35,7 @@ Neste momento, o projeto possui:
 - PostgreSQL em container separado via Docker Compose
 - modelagem principal do banco implementada
 - fluxos web iniciais de entrega, devolucao e baixa
+- tela de historico de movimentacoes do estoque
 - camada de service para regras operacionais
 - autenticacao basica
 - testes automatizados rodando no Docker

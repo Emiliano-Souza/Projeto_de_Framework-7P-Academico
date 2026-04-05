@@ -8,4 +8,5 @@ urlpatterns = [
     path("", include("epi.urls.entregas")),
     path("", include("epi.urls.devolucoes")),
     path("", include("epi.urls.baixas")),
+    path("", include("epi.urls.movimentacoes")),
 ]

@@ -44,3 +44,4 @@ def registrar_entrega_view(request):
             "titulo_pagina": "Registrar Entrega de EPI",
         },
     )
+

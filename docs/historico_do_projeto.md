@@ -131,5 +131,13 @@
 - uso de campo `datetime-local` para facilitar o preenchimento
 - ampliacao dos testes da interface e do formulario
 
+## Etapa 21 - Reorganizacao de Views e Rotas
+
+- separacao das views da app em pasta `views/`
+- separacao das rotas da app em pasta `urls/`
+- criacao do modulo `views/entregas.py` para o fluxo de entrega
+- criacao do modulo `urls/entregas.py` para as rotas do fluxo de entrega
+- manutencao das URLs e nomes existentes sem alterar comportamento
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

@@ -1,11 +1,9 @@
 from django.urls import path
 
-from epi.views import registrar_entrega_view
-
-
-app_name = "epi"
+from epi.views.entregas import registrar_entrega_view
 
 
 urlpatterns = [
     path("entregas/nova/", registrar_entrega_view, name="registrar_entrega"),
 ]
+

@@ -154,5 +154,13 @@
 - ajuste do model para delegar persistencia operacional ao service
 - ampliacao dos testes para cobrir devolucoes validas e invalidas via service
 
+## Etapa 24 - Fluxo Web de Devolucao
+
+- criacao da view protegida por autenticacao para devolucao de EPI
+- criacao da rota dedicada ao fluxo de devolucao
+- criacao do template inicial da tela de devolucao
+- exibicao de mensagens de sucesso e erro no fluxo web
+- ampliacao dos testes para validar acesso, renderizacao e submissao da devolucao
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

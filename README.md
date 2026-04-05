@@ -24,6 +24,7 @@ A documentacao tecnica do projeto esta organizada na pasta `docs/`.
 - `docs/estrutura_django.md`: organizacao do projeto dentro do Django
 - `docs/fluxos_aplicacao.md`: fluxos tecnicos de entrega, devolucao e baixa
 - `docs/guia_tecnico.md`: particularidades do codigo, snippets e pontos de manutencao
+- `docs/anatomia_service_entregas.md`: explicacao detalhada do arquivo central de regras operacionais
 - `docs/decisoes_tecnicas.md`: justificativas das escolhas tecnicas
 - `docs/historico_do_projeto.md`: evolucao do projeto por etapas
 

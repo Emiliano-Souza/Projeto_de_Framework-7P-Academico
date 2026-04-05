@@ -210,5 +210,12 @@
 - inclusao de troubleshooting tecnico recorrente
 - inclusao de checklist tecnico para evolucao de novas funcionalidades
 
+## Etapa 31 - Anatomia do Service Principal
+
+- criacao de documentacao dedicada ao arquivo `services/entregas.py`
+- explicacao funcao por funcao da camada de service principal
+- detalhamento do fluxo interno de persistencia e criacao de movimentacoes
+- destaque dos pontos mais sensiveis para manutencao e refatoracao
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

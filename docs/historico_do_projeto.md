@@ -67,5 +67,11 @@
 - regra para impedir saldo de lote acima da quantidade recebida
 - ajuste automatico do status da entrega com base na devolucao
 
+## Etapa 11 - Testes Automatizados Iniciais
+
+- criacao de testes para integridade de `epi_lote`
+- criacao de testes para fluxo de entrega e devolucao
+- verificacao automatizada de baixa de saldo e geracao de movimentacao
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

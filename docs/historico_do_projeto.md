@@ -97,5 +97,11 @@
 - criacao de documento tecnico para explicar estrategia e cobertura da suite
 - integracao da documentacao de testes ao indice principal do projeto
 
+## Etapa 16 - Inicio da Camada de Servico
+
+- criacao de servico para registro de entrega de EPI
+- centralizacao inicial de validacoes explicitas de negocio
+- preparacao da arquitetura para formularios, views e fluxo web
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

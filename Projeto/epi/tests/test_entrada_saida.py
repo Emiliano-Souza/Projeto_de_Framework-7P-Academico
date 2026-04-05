@@ -1,7 +1,10 @@
+from datetime import timedelta
+
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 from epi.models import EntregaEPI, MovimentacaoEstoque
+from epi.services.entregas import registrar_entrega_epi
 from epi.tests.base import BaseModelTestCase
 
 
@@ -168,3 +171,45 @@ class EntregaEPIModelTests(BaseModelTestCase):
 
         self.lote.refresh_from_db()
         self.assertEqual(self.lote.quantidade_disponivel, 10)
+
+
+class EntregaEPIServiceTests(BaseModelTestCase):
+    def test_service_bloqueia_funcionario_inativo(self):
+        self.funcionario.ativo = False
+        self.funcionario.save(update_fields=["ativo"])
+
+        with self.assertRaises(ValidationError):
+            registrar_entrega_epi(
+                funcionario=self.funcionario,
+                epi_lote=self.lote,
+                quantidade_entregue=1,
+                usuario_entrega=self.user,
+            )
+
+    def test_service_bloqueia_lote_vencido(self):
+        self.lote.data_validade = timezone.now().date() - timedelta(days=1)
+        self.lote.save(update_fields=["data_validade"])
+
+        with self.assertRaises(ValidationError):
+            registrar_entrega_epi(
+                funcionario=self.funcionario,
+                epi_lote=self.lote,
+                quantidade_entregue=1,
+                usuario_entrega=self.user,
+            )
+
+    def test_service_registra_entrega_com_sucesso(self):
+        entrega = registrar_entrega_epi(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=2,
+            usuario_entrega=self.user,
+            confirmado_recebimento=True,
+            observacao="Entrega via service",
+        )
+
+        self.lote.refresh_from_db()
+
+        self.assertEqual(self.lote.quantidade_disponivel, 8)
+        self.assertEqual(entrega.quantidade_entregue, 2)
+        self.assertTrue(entrega.confirmado_recebimento)

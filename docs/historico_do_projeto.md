@@ -18,5 +18,12 @@
 - implementacao da tabela `setor`
 - exposicao de `setor` no admin do Django
 
+## Etapa 4 - Cadastro de Funcionarios
+
+- implementacao da tabela `funcionario`
+- relacionamento entre `funcionario` e `setor`
+- uso de `PROTECT` para preservar integridade historica
+- exposicao de `funcionario` no admin do Django
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

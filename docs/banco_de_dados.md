@@ -45,14 +45,43 @@ Decisoes aplicadas:
 - timestamps de criacao e atualizacao
 - nome fisico da tabela definido como `setor`
 
+## Segunda Etapa Implementada
+A segunda tabela implementada foi `funcionario`.
+
+### Tabela `funcionario`
+Finalidade:
+Representar a pessoa que recebera EPIs dentro do contexto da empresa.
+
+Campos atuais:
+
+- `id`
+- `matricula`
+- `nome_completo`
+- `setor_id`
+- `cargo`
+- `data_admissao`
+- `ativo`
+- `observacao`
+- `created_at`
+- `updated_at`
+
+Decisoes aplicadas:
+
+- `id` com `BigAutoField`
+- `matricula` obrigatoria e unica
+- `nome_completo` indexado para busca
+- relacionamento com `setor` usando `PROTECT`
+- `ativo` para desativacao logica
+- timestamps de criacao e atualizacao
+- nome fisico da tabela definido como `funcionario`
+
 ## Proximas Etapas Planejadas
 As proximas tabelas previstas sao:
 
-1. `funcionario`
-2. `epi`
-3. `epi_lote`
-4. `entrega_epi`
-5. `movimentacao_estoque`
+1. `epi`
+2. `epi_lote`
+3. `entrega_epi`
+4. `movimentacao_estoque`
 
 ## Principios de Modelagem
 Os principios adotados para a modelagem sao:

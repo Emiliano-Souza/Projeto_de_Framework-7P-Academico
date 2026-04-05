@@ -137,6 +137,21 @@ class EntregaEPIModelTests(BaseModelTestCase):
         with self.assertRaises(ValidationError):
             entrega.full_clean()
 
+    def test_nao_permite_soma_devolucao_e_baixa_maior_que_entregue(self):
+        entrega = EntregaEPI(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=3,
+            quantidade_devolvida=2,
+            quantidade_baixada=2,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+            usuario_devolucao=self.user,
+        )
+
+        with self.assertRaises(ValidationError):
+            entrega.full_clean()
+
     def test_multiplas_entregas_no_mesmo_lote_consumem_saldo_acumulado(self):
         EntregaEPI.objects.create(
             funcionario=self.funcionario,
@@ -171,6 +186,17 @@ class EntregaEPIModelTests(BaseModelTestCase):
 
         self.lote.refresh_from_db()
         self.assertEqual(self.lote.quantidade_disponivel, 10)
+
+    def test_novo_campo_quantidade_baixada_inicia_com_zero(self):
+        entrega = EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=1,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+        )
+
+        self.assertEqual(entrega.quantidade_baixada, 0)
 
 
 class EntregaEPIServiceTests(BaseModelTestCase):

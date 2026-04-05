@@ -5,6 +5,9 @@ from epi.tests.base import BaseModelTestCase
 
 
 class MovimentacaoEstoqueModelTests(BaseModelTestCase):
+    def test_tipo_movimento_baixa_esta_disponivel(self):
+        self.assertEqual(MovimentacaoEstoque.TipoMovimento.BAIXA, 7)
+
     def test_nao_permite_movimentacao_com_quantidade_zero(self):
         movimentacao = MovimentacaoEstoque(
             epi_lote=self.lote,

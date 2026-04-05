@@ -153,6 +153,7 @@ class EntregaEPI(models.Model):
     )
     quantidade_entregue = models.PositiveIntegerField()
     quantidade_devolvida = models.PositiveIntegerField(default=0)
+    quantidade_baixada = models.PositiveIntegerField(default=0)
     data_entrega = models.DateTimeField(db_index=True)
     data_devolucao = models.DateTimeField(null=True, blank=True)
     status = models.PositiveSmallIntegerField(
@@ -194,11 +195,30 @@ class EntregaEPI(models.Model):
                 condition=models.Q(quantidade_devolvida__lte=models.F("quantidade_entregue")),
                 name="ck_entrega_epi_quantidade_devolvida_lte_entregue",
             ),
+            models.CheckConstraint(
+                condition=(
+                    models.Q(
+                        quantidade_devolvida__lte=(
+                            models.F("quantidade_entregue") - models.F("quantidade_baixada")
+                        )
+                    )
+                ),
+                name="ck_entrega_epi_devolvida_mais_baixada_lte_entregue",
+            ),
         ]
 
     def clean(self):
         if self.quantidade_devolvida > 0 and not self.usuario_devolucao_id:
             raise ValidationError({"usuario_devolucao": "Informe o usuario da devolucao."})
+
+        if self.quantidade_devolvida + self.quantidade_baixada > self.quantidade_entregue:
+            raise ValidationError(
+                {
+                    "quantidade_baixada": (
+                        "A soma de devolucao e baixa nao pode ser maior que a quantidade entregue."
+                    )
+                }
+            )
 
     def save(self, *args, **kwargs):
         from epi.services.entregas import persistir_entrega_epi
@@ -217,6 +237,7 @@ class MovimentacaoEstoque(models.Model):
         AJUSTE = 4, "Ajuste"
         DESCARTE = 5, "Descarte"
         PERDA = 6, "Perda"
+        BAIXA = 7, "Baixa"
 
     id = models.BigAutoField(primary_key=True)
     epi_lote = models.ForeignKey(

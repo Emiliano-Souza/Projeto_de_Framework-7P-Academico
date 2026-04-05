@@ -154,6 +154,7 @@ Campos atuais:
 - `epi_lote_id`
 - `quantidade_entregue`
 - `quantidade_devolvida`
+- `quantidade_baixada`
 - `data_entrega`
 - `data_devolucao`
 - `status`
@@ -175,6 +176,7 @@ Decisoes aplicadas:
 - constraint para garantir `quantidade_entregue > 0`
 - constraint para garantir `quantidade_devolvida >= 0`
 - constraint para garantir `quantidade_devolvida <= quantidade_entregue`
+- constraint para garantir `quantidade_devolvida + quantidade_baixada <= quantidade_entregue`
 - nome fisico da tabela definido como `entrega_epi`
 
 ## Sexta Etapa Implementada
@@ -208,6 +210,7 @@ Decisoes aplicadas:
 - uso de `auth_user` do Django para auditoria do responsavel
 - `created_at` indexado
 - `tipo_movimento` implementado com `choices`
+- tipo `baixa` reservado para o fluxo de encerramento sem retorno ao estoque
 - constraint para garantir `quantidade > 0`
 - constraint para garantir `quantidade_antes >= 0`
 - constraint para garantir `quantidade_depois >= 0`

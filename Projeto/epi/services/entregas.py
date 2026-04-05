@@ -43,6 +43,10 @@ def _validar_reducao_retroativa(entrega, entrega_anterior):
             errors["quantidade_devolvida"] = (
                 "Nao e permitido reduzir a quantidade devolvida apos o registro."
             )
+        if entrega.quantidade_baixada < entrega_anterior.quantidade_baixada:
+            errors["quantidade_baixada"] = (
+                "Nao e permitido reduzir a quantidade baixada apos o registro."
+            )
 
     if errors:
         raise ValidationError(errors)

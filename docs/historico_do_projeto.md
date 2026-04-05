@@ -162,5 +162,13 @@
 - exibicao de mensagens de sucesso e erro no fluxo web
 - ampliacao dos testes para validar acesso, renderizacao e submissao da devolucao
 
+## Etapa 25 - Estrutura Inicial da Baixa
+
+- adicao do campo `quantidade_baixada` em `entrega_epi`
+- adicao de regra para limitar devolucao mais baixa a quantidade entregue
+- preparacao do tipo de movimentacao `baixa` em `movimentacao_estoque`
+- ampliacao dos testes para validar a nova integridade estrutural
+- criacao da migracao inicial da estrutura de baixa
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

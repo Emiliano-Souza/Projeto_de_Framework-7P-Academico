@@ -194,5 +194,13 @@
 - exibicao de mensagens de sucesso e erro no fluxo web
 - ampliacao dos testes para validar acesso, renderizacao e submissao da baixa
 
+## Etapa 29 - Reforco da Documentacao Tecnica
+
+- criacao de documentacao especifica para estrutura Django
+- criacao de documentacao tecnica dos fluxos de aplicacao
+- criacao de guia tecnico com snippets e particularidades do projeto
+- atualizacao do README com foco maior em onboarding tecnico
+- atualizacao da documentacao de testes para refletir o estado atual da suite
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

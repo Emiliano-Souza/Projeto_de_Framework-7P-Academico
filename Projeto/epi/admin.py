@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import EPI, EPILote, Funcionario, Setor
+from .models import EPI, EPILote, EntregaEPI, Funcionario, Setor
 
 
 @admin.register(Setor)
@@ -42,3 +42,22 @@ class EPILoteAdmin(admin.ModelAdmin):
     )
     list_filter = ("data_validade", "epi")
     search_fields = ("numero_lote", "epi__codigo_interno", "epi__nome")
+
+
+@admin.register(EntregaEPI)
+class EntregaEPIAdmin(admin.ModelAdmin):
+    list_display = (
+        "funcionario",
+        "epi_lote",
+        "quantidade_entregue",
+        "quantidade_devolvida",
+        "status",
+        "data_entrega",
+    )
+    list_filter = ("status", "confirmado_recebimento", "data_entrega")
+    search_fields = (
+        "funcionario__matricula",
+        "funcionario__nome_completo",
+        "epi_lote__numero_lote",
+        "epi_lote__epi__nome",
+    )

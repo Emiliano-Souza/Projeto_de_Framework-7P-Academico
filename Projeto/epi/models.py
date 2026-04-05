@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -113,3 +114,72 @@ class EPILote(models.Model):
 
     def __str__(self):
         return f"{self.epi.nome} - lote {self.numero_lote}"
+
+
+class EntregaEPI(models.Model):
+    class Status(models.IntegerChoices):
+        ENTREGUE = 1, "Entregue"
+        DEVOLVIDO = 2, "Devolvido"
+        PARCIALMENTE_DEVOLVIDO = 3, "Parcialmente devolvido"
+        EXTRAVIADO = 4, "Extraviado"
+        DANIFICADO = 5, "Danificado"
+        VENCIDO = 6, "Vencido"
+
+    id = models.BigAutoField(primary_key=True)
+    funcionario = models.ForeignKey(
+        Funcionario,
+        on_delete=models.PROTECT,
+        related_name="entregas_epi",
+    )
+    epi_lote = models.ForeignKey(
+        EPILote,
+        on_delete=models.PROTECT,
+        related_name="entregas",
+    )
+    quantidade_entregue = models.PositiveIntegerField()
+    quantidade_devolvida = models.PositiveIntegerField(default=0)
+    data_entrega = models.DateTimeField(db_index=True)
+    data_devolucao = models.DateTimeField(null=True, blank=True)
+    status = models.PositiveSmallIntegerField(
+        choices=Status.choices,
+        default=Status.ENTREGUE,
+    )
+    confirmado_recebimento = models.BooleanField(default=False)
+    usuario_entrega = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="entregas_epi_registradas",
+    )
+    usuario_devolucao = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="devolucoes_epi_registradas",
+        null=True,
+        blank=True,
+    )
+    observacao = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "entrega_epi"
+        ordering = ["-data_entrega", "-id"]
+        verbose_name = "Entrega de EPI"
+        verbose_name_plural = "Entregas de EPI"
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(quantidade_entregue__gt=0),
+                name="ck_entrega_epi_quantidade_entregue_gt_0",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(quantidade_devolvida__gte=0),
+                name="ck_entrega_epi_quantidade_devolvida_gte_0",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(quantidade_devolvida__lte=models.F("quantidade_entregue")),
+                name="ck_entrega_epi_quantidade_devolvida_lte_entregue",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.funcionario.nome_completo} - {self.epi_lote.epi.nome}"

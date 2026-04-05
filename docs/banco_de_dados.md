@@ -139,11 +139,47 @@ Decisoes aplicadas:
 - constraint para garantir `quantidade_disponivel >= 0`
 - nome fisico da tabela definido como `epi_lote`
 
+## Quinta Etapa Implementada
+A quinta tabela implementada foi `entrega_epi`.
+
+### Tabela `entrega_epi`
+Finalidade:
+Registrar a operacao de entrega de um lote de EPI para um funcionario, com controle de devolucao e status.
+
+Campos atuais:
+
+- `id`
+- `funcionario_id`
+- `epi_lote_id`
+- `quantidade_entregue`
+- `quantidade_devolvida`
+- `data_entrega`
+- `data_devolucao`
+- `status`
+- `confirmado_recebimento`
+- `usuario_entrega_id`
+- `usuario_devolucao_id`
+- `observacao`
+- `created_at`
+- `updated_at`
+
+Decisoes aplicadas:
+
+- `id` com `BigAutoField`
+- relacionamento com `funcionario` usando `PROTECT`
+- relacionamento com `epi_lote` usando `PROTECT`
+- uso de `auth_user` do Django para registrar usuarios da operacao
+- `data_entrega` indexada
+- `status` implementado com `choices`
+- constraint para garantir `quantidade_entregue > 0`
+- constraint para garantir `quantidade_devolvida >= 0`
+- constraint para garantir `quantidade_devolvida <= quantidade_entregue`
+- nome fisico da tabela definido como `entrega_epi`
+
 ## Proximas Etapas Planejadas
 As proximas tabelas previstas sao:
 
-1. `entrega_epi`
-2. `movimentacao_estoque`
+1. `movimentacao_estoque`
 
 ## Principios de Modelagem
 Os principios adotados para a modelagem sao:

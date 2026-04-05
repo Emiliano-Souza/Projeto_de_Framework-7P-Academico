@@ -39,5 +39,13 @@
 - constraints de integridade para quantidade e unicidade do lote
 - exposicao de `epi_lote` no admin do Django
 
+## Etapa 7 - Registro de Entregas de EPI
+
+- implementacao da tabela `entrega_epi`
+- relacionamento entre entrega, funcionario, lote e usuario do sistema
+- definicao de status para acompanhar o ciclo da entrega
+- constraints para garantir coerencia entre quantidade entregue e devolvida
+- exposicao de `entrega_epi` no admin do Django
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

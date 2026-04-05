@@ -11,6 +11,7 @@ class RegistrarEntregaViewTests(BaseModelTestCase):
         response = self.client.get(reverse("epi:registrar_entrega"))
 
         self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login/", response.url)
 
     def test_view_renderiza_formulario_para_usuario_logado(self):
         self.client.force_login(self.user)
@@ -61,3 +62,11 @@ class RegistrarEntregaViewTests(BaseModelTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Select a valid choice.")
+
+
+class AuthViewTests(TestCase):
+    def test_login_view_renderiza(self):
+        response = self.client.get(reverse("login"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Entrar")

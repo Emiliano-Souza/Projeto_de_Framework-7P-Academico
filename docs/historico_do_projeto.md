@@ -117,5 +117,11 @@
 - criacao de template inicial do fluxo
 - integracao do fluxo web com o service de entrega
 
+## Etapa 19 - Acesso e Login
+
+- ativacao das URLs de autenticacao do Django
+- criacao de template inicial de login
+- configuracao de redirecionamento apos autenticacao
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

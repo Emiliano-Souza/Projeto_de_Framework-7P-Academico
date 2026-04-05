@@ -43,12 +43,15 @@ Essa regra evita um estado invalido de estoque ja na camada de banco e tambem na
 - o status da entrega acompanha automaticamente o nivel de devolucao
 
 ## Direcao Arquitetural Atual
-A aplicacao passou a adotar uma camada de servico para o fluxo de entrega.
+A aplicacao passou a adotar uma camada de servico para os fluxos de entrega e devolucao.
 
 Essa camada concentra validacoes explicitas de negocio, como:
 
 - funcionario ativo
 - lote nao vencido
 - saldo suficiente para a entrega
+- entrega existente para devolucao
+- quantidade devolvida positiva
+- devolucao limitada ao saldo pendente da entrega
 
 Com isso, a regra operacional fica mais visivel fora do model e a arquitetura fica mais preparada para views, formularios e evolucao futura.

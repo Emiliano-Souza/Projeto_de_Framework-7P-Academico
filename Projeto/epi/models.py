@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.db import models, transaction
-from django.utils import timezone
+from django.db import models
 
 
 class Setor(models.Model):
@@ -198,115 +197,13 @@ class EntregaEPI(models.Model):
         ]
 
     def clean(self):
-        errors = {}
-
-        if self.quantidade_devolvida > 0:
-            if not self.usuario_devolucao_id:
-                errors["usuario_devolucao"] = "Informe o usuario da devolucao."
-        else:
-            self.data_devolucao = None
-            self.usuario_devolucao = None
-
-        if self.quantidade_devolvida == 0 and self.status == self.Status.DEVOLVIDO:
-            self.status = self.Status.ENTREGUE
-
-        if self.quantidade_devolvida == self.quantidade_entregue:
-            self.status = self.Status.DEVOLVIDO
-        elif self.quantidade_devolvida > 0:
-            self.status = self.Status.PARCIALMENTE_DEVOLVIDO
-        elif self.status in {
-            self.Status.DEVOLVIDO,
-            self.Status.PARCIALMENTE_DEVOLVIDO,
-        }:
-            self.status = self.Status.ENTREGUE
-
-        if self.pk:
-            entrega_anterior = (
-                EntregaEPI.objects.filter(pk=self.pk)
-                .values("quantidade_entregue", "quantidade_devolvida")
-                .first()
-            )
-            if entrega_anterior:
-                if self.quantidade_entregue < entrega_anterior["quantidade_entregue"]:
-                    errors["quantidade_entregue"] = (
-                        "Nao e permitido reduzir a quantidade entregue apos o registro."
-                    )
-                if self.quantidade_devolvida < entrega_anterior["quantidade_devolvida"]:
-                    errors["quantidade_devolvida"] = (
-                        "Nao e permitido reduzir a quantidade devolvida apos o registro."
-                    )
-
-        if errors:
-            raise ValidationError(errors)
+        if self.quantidade_devolvida > 0 and not self.usuario_devolucao_id:
+            raise ValidationError({"usuario_devolucao": "Informe o usuario da devolucao."})
 
     def save(self, *args, **kwargs):
-        self.full_clean()
+        from epi.services.entregas import persistir_entrega_epi
 
-        with transaction.atomic():
-            lote = EPILote.objects.select_for_update().get(pk=self.epi_lote_id)
-            saldo_inicial = lote.quantidade_disponivel
-            entrega_anterior = None
-
-            if self.pk:
-                entrega_anterior = (
-                    EntregaEPI.objects.select_for_update()
-                    .filter(pk=self.pk)
-                    .first()
-                )
-
-            quantidade_entregue_anterior = 0
-            quantidade_devolvida_anterior = 0
-            if entrega_anterior:
-                quantidade_entregue_anterior = entrega_anterior.quantidade_entregue
-                quantidade_devolvida_anterior = entrega_anterior.quantidade_devolvida
-
-            delta_entrega = self.quantidade_entregue - quantidade_entregue_anterior
-            delta_devolucao = self.quantidade_devolvida - quantidade_devolvida_anterior
-            novo_saldo = lote.quantidade_disponivel - delta_entrega + delta_devolucao
-
-            if novo_saldo < 0:
-                raise ValidationError(
-                    {"quantidade_entregue": "Quantidade indisponivel no lote selecionado."}
-                )
-
-            lote.quantidade_disponivel = novo_saldo
-            lote.save(update_fields=["quantidade_disponivel", "updated_at"])
-
-            if self.quantidade_devolvida > 0 and not self.data_devolucao:
-                self.data_devolucao = timezone.now()
-
-            super().save(*args, **kwargs)
-
-            saldo_cursor = saldo_inicial
-            if delta_entrega > 0:
-                MovimentacaoEstoque.objects.create(
-                    epi_lote=lote,
-                    tipo_movimento=MovimentacaoEstoque.TipoMovimento.ENTREGA,
-                    quantidade=delta_entrega,
-                    quantidade_antes=saldo_cursor,
-                    quantidade_depois=saldo_cursor - delta_entrega,
-                    funcionario=self.funcionario,
-                    entrega_epi=self,
-                    usuario=self.usuario_entrega,
-                    motivo="Entrega de EPI",
-                    observacao=self.observacao,
-                )
-                saldo_cursor -= delta_entrega
-
-            if delta_devolucao > 0:
-                MovimentacaoEstoque.objects.create(
-                    epi_lote=lote,
-                    tipo_movimento=MovimentacaoEstoque.TipoMovimento.DEVOLUCAO,
-                    quantidade=delta_devolucao,
-                    quantidade_antes=saldo_cursor,
-                    quantidade_depois=saldo_cursor + delta_devolucao,
-                    funcionario=self.funcionario,
-                    entrega_epi=self,
-                    usuario=self.usuario_devolucao,
-                    motivo="Devolucao de EPI",
-                    observacao=self.observacao,
-                )
-                saldo_cursor += delta_devolucao
+        return persistir_entrega_epi(self, *args, **kwargs)
 
     def __str__(self):
         return f"{self.funcionario.nome_completo} - {self.epi_lote.epi.nome}"

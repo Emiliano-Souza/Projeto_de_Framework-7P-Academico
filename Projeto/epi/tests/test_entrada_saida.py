@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 from epi.models import EntregaEPI, MovimentacaoEstoque
-from epi.services.entregas import registrar_entrega_epi
+from epi.services.entregas import registrar_devolucao_epi, registrar_entrega_epi
 from epi.tests.base import BaseModelTestCase
 
 
@@ -213,3 +213,69 @@ class EntregaEPIServiceTests(BaseModelTestCase):
         self.assertEqual(self.lote.quantidade_disponivel, 8)
         self.assertEqual(entrega.quantidade_entregue, 2)
         self.assertTrue(entrega.confirmado_recebimento)
+
+    def test_service_registra_devolucao_com_sucesso(self):
+        entrega = registrar_entrega_epi(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=4,
+            usuario_entrega=self.user,
+        )
+
+        registrar_devolucao_epi(
+            entrega_id=entrega.pk,
+            quantidade_devolvida=2,
+            usuario_devolucao=self.user,
+            observacao="Retorno parcial via service",
+        )
+
+        self.lote.refresh_from_db()
+        entrega.refresh_from_db()
+
+        self.assertEqual(self.lote.quantidade_disponivel, 8)
+        self.assertEqual(entrega.quantidade_devolvida, 2)
+        self.assertEqual(entrega.usuario_devolucao, self.user)
+        self.assertEqual(entrega.status, EntregaEPI.Status.PARCIALMENTE_DEVOLVIDO)
+
+    def test_service_bloqueia_devolucao_com_quantidade_nao_positiva(self):
+        entrega = registrar_entrega_epi(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=2,
+            usuario_entrega=self.user,
+        )
+
+        with self.assertRaises(ValidationError):
+            registrar_devolucao_epi(
+                entrega_id=entrega.pk,
+                quantidade_devolvida=0,
+                usuario_devolucao=self.user,
+            )
+
+    def test_service_bloqueia_entrega_inexistente_na_devolucao(self):
+        with self.assertRaises(ValidationError):
+            registrar_devolucao_epi(
+                entrega_id=999999,
+                quantidade_devolvida=1,
+                usuario_devolucao=self.user,
+            )
+
+    def test_service_bloqueia_devolucao_maior_que_saldo_pendente(self):
+        entrega = registrar_entrega_epi(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=3,
+            usuario_entrega=self.user,
+        )
+        registrar_devolucao_epi(
+            entrega_id=entrega.pk,
+            quantidade_devolvida=1,
+            usuario_devolucao=self.user,
+        )
+
+        with self.assertRaises(ValidationError):
+            registrar_devolucao_epi(
+                entrega_id=entrega.pk,
+                quantidade_devolvida=3,
+                usuario_devolucao=self.user,
+            )

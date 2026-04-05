@@ -146,5 +146,13 @@
 - preparacao da interface com labels, help texts e campos padronizados
 - ampliacao dos testes para validar a estrutura do novo formulario
 
+## Etapa 23 - Servico de Devolucao e Refino da Camada de Servico
+
+- criacao do servico para registrar devolucao de EPI
+- validacao de entrega existente, quantidade positiva e saldo pendente para devolucao
+- centralizacao da orquestracao de lote e movimentacao na camada de servico
+- ajuste do model para delegar persistencia operacional ao service
+- ampliacao dos testes para cobrir devolucoes validas e invalidas via service
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

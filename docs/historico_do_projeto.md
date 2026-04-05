@@ -1,0 +1,22 @@
+# Historico do Projeto
+
+## Etapa 1 - Estrutura Inicial
+
+- projeto base em Django
+- configuracao inicial do ambiente com Docker
+- PostgreSQL definido como banco de dados do projeto
+
+## Etapa 2 - Ajuste de Infraestrutura do Banco
+
+- separacao confirmada entre aplicacao e banco em containers distintos
+- porta externa do PostgreSQL alterada para `55432`
+- `healthcheck` adicionado ao servico do banco
+
+## Etapa 3 - Inicio da Modelagem do Banco
+
+- criacao da app de dominio inicial
+- implementacao da tabela `setor`
+- exposicao de `setor` no admin do Django
+
+## Uso Deste Documento
+Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

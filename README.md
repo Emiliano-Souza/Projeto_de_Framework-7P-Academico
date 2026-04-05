@@ -6,6 +6,24 @@ Este sistema foi desenvolvido para automatizar o controle e gerenciamento de Equ
 ## 🛠️ Framework e Tecnologias
 O projeto foi desenvolvido utilizando o framework **Django (Python)**, aproveitando sua estrutura robusta de ORM e o sistema de administração nativo para garantir a integridade dos dados e a agilidade no gerenciamento das informações de segurança do trabalho.
 
+## 📚 Documentação
+A documentação técnica do projeto está organizada na pasta `docs/`.
+
+- `docs/arquitetura.md`: visão da arquitetura, containers e organização do sistema
+- `docs/configuracao_ambiente.md`: como o ambiente local funciona
+- `docs/banco_de_dados.md`: modelagem do banco, decisões e evolução das tabelas
+- `docs/regras_de_negocio.md`: regras funcionais e princípios de integridade
+- `docs/decisoes_tecnicas.md`: justificativas das escolhas técnicas
+- `docs/historico_do_projeto.md`: evolução do projeto por etapas
+
+## 🚧 Estado Atual
+Neste momento, o projeto possui:
+
+- estrutura base em Django
+- PostgreSQL em container separado via Docker Compose
+- app de domínio inicial para a gestão de EPIs
+- primeira tabela do banco implementada: `setor`
+
 ## 👥 Autores
 * **Emiliano Ferreira de Souza Junior**
 * **Mário Alves Fernandes Neto**

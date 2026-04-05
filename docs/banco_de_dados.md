@@ -108,12 +108,42 @@ Decisoes aplicadas:
 - timestamps de criacao e atualizacao
 - nome fisico da tabela definido como `epi`
 
+## Quarta Etapa Implementada
+A quarta tabela implementada foi `epi_lote`.
+
+### Tabela `epi_lote`
+Finalidade:
+Representar o estoque fisico por lote, com validade, saldo disponivel e dados de entrada.
+
+Campos atuais:
+
+- `id`
+- `epi_id`
+- `numero_lote`
+- `data_fabricacao`
+- `data_validade`
+- `quantidade_recebida`
+- `quantidade_disponivel`
+- `local_armazenamento`
+- `valor_unitario`
+- `created_at`
+- `updated_at`
+
+Decisoes aplicadas:
+
+- `id` com `BigAutoField`
+- relacionamento com `epi` usando `PROTECT`
+- `data_validade` indexada
+- unicidade por `epi` e `numero_lote`
+- constraint para garantir `quantidade_recebida > 0`
+- constraint para garantir `quantidade_disponivel >= 0`
+- nome fisico da tabela definido como `epi_lote`
+
 ## Proximas Etapas Planejadas
 As proximas tabelas previstas sao:
 
-1. `epi_lote`
-2. `entrega_epi`
-3. `movimentacao_estoque`
+1. `entrega_epi`
+2. `movimentacao_estoque`
 
 ## Principios de Modelagem
 Os principios adotados para a modelagem sao:

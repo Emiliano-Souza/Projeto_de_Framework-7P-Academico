@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import EPI, Funcionario, Setor
+from .models import EPI, EPILote, Funcionario, Setor
 
 
 @admin.register(Setor)
@@ -29,3 +29,16 @@ class EPIAdmin(admin.ModelAdmin):
     )
     list_filter = ("ativo", "controla_tamanho", "categoria")
     search_fields = ("codigo_interno", "nome", "numero_ca", "fabricante")
+
+
+@admin.register(EPILote)
+class EPILoteAdmin(admin.ModelAdmin):
+    list_display = (
+        "epi",
+        "numero_lote",
+        "data_validade",
+        "quantidade_recebida",
+        "quantidade_disponivel",
+    )
+    list_filter = ("data_validade", "epi")
+    search_fields = ("numero_lote", "epi__codigo_interno", "epi__nome")

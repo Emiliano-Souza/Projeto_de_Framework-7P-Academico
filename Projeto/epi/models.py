@@ -67,3 +67,49 @@ class EPI(models.Model):
 
     def __str__(self):
         return f"{self.codigo_interno} - {self.nome}"
+
+
+class EPILote(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    epi = models.ForeignKey(
+        EPI,
+        on_delete=models.PROTECT,
+        related_name="lotes",
+    )
+    numero_lote = models.CharField(max_length=50)
+    data_fabricacao = models.DateField(null=True, blank=True)
+    data_validade = models.DateField(null=True, blank=True, db_index=True)
+    quantidade_recebida = models.PositiveIntegerField()
+    quantidade_disponivel = models.PositiveIntegerField()
+    local_armazenamento = models.CharField(max_length=60, null=True, blank=True)
+    valor_unitario = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "epi_lote"
+        ordering = ["data_validade", "numero_lote"]
+        verbose_name = "Lote de EPI"
+        verbose_name_plural = "Lotes de EPI"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["epi", "numero_lote"],
+                name="uq_epi_lote_por_epi_numero_lote",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(quantidade_recebida__gt=0),
+                name="ck_epi_lote_quantidade_recebida_gt_0",
+            ),
+            models.CheckConstraint(
+                condition=models.Q(quantidade_disponivel__gte=0),
+                name="ck_epi_lote_quantidade_disponivel_gte_0",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.epi.nome} - lote {self.numero_lote}"

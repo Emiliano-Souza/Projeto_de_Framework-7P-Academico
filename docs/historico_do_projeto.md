@@ -32,5 +32,12 @@
 - indexacao dos campos mais relevantes para busca
 - exposicao de `epi` no admin do Django
 
+## Etapa 6 - Controle de Estoque por Lote
+
+- implementacao da tabela `epi_lote`
+- relacionamento entre `epi_lote` e `epi`
+- constraints de integridade para quantidade e unicidade do lote
+- exposicao de `epi_lote` no admin do Django
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

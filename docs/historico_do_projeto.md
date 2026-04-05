@@ -73,5 +73,12 @@
 - criacao de testes para fluxo de entrega e devolucao
 - verificacao automatizada de baixa de saldo e geracao de movimentacao
 
+## Etapa 12 - Expansao dos Testes de Borda
+
+- testes para unicidade de lote por EPI
+- testes para devolucao invalida
+- testes para consumo acumulado do mesmo lote
+- testes para restauracao total de saldo
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

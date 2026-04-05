@@ -43,6 +43,28 @@ class EPILoteModelTests(BaseModelTestCase):
         with self.assertRaises(ValidationError):
             lote.full_clean()
 
+    def test_nao_permite_lote_duplicado_para_mesmo_epi(self):
+        lote = EPILote(
+            epi=self.epi,
+            numero_lote="L001",
+            quantidade_recebida=5,
+            quantidade_disponivel=5,
+        )
+
+        with self.assertRaises(ValidationError):
+            lote.full_clean()
+
+    def test_nao_permite_quantidade_recebida_menor_ou_igual_a_zero(self):
+        lote = EPILote(
+            epi=self.epi,
+            numero_lote="L003",
+            quantidade_recebida=0,
+            quantidade_disponivel=0,
+        )
+
+        with self.assertRaises(ValidationError):
+            lote.full_clean()
+
 
 class EntregaEPIModelTests(BaseModelTestCase):
     def test_entrega_baixa_saldo_do_lote_e_gera_movimentacao(self):
@@ -127,3 +149,83 @@ class EntregaEPIModelTests(BaseModelTestCase):
         entrega.refresh_from_db()
 
         self.assertEqual(entrega.status, EntregaEPI.Status.DEVOLVIDO)
+
+    def test_nao_permite_devolucao_sem_usuario_devolucao(self):
+        entrega = EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=2,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+        )
+
+        entrega.quantidade_devolvida = 1
+
+        with self.assertRaises(ValidationError):
+            entrega.save()
+
+    def test_nao_permite_reduzir_quantidade_devolvida_apos_registro(self):
+        entrega = EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=4,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+        )
+        entrega.quantidade_devolvida = 2
+        entrega.usuario_devolucao = self.user
+        entrega.save()
+
+        entrega.quantidade_devolvida = 1
+
+        with self.assertRaises(ValidationError):
+            entrega.save()
+
+    def test_nao_permite_quantidade_devolvida_maior_que_entregue(self):
+        entrega = EntregaEPI(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=2,
+            quantidade_devolvida=3,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+            usuario_devolucao=self.user,
+        )
+
+        with self.assertRaises(ValidationError):
+            entrega.full_clean()
+
+    def test_multiplas_entregas_no_mesmo_lote_consumem_saldo_acumulado(self):
+        EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=3,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+        )
+        EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=2,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+        )
+
+        self.lote.refresh_from_db()
+        self.assertEqual(self.lote.quantidade_disponivel, 5)
+
+    def test_devolucao_total_restaura_saldo_do_lote(self):
+        entrega = EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=4,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+        )
+
+        entrega.quantidade_devolvida = 4
+        entrega.usuario_devolucao = self.user
+        entrega.save()
+
+        self.lote.refresh_from_db()
+        self.assertEqual(self.lote.quantidade_disponivel, 10)

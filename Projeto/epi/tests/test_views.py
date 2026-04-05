@@ -20,6 +20,8 @@ class RegistrarEntregaViewTests(BaseModelTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Registrar Entrega de EPI")
+        self.assertContains(response, "Antes de salvar")
+        self.assertContains(response, "Voltar ao painel administrativo")
 
     def test_view_registra_entrega_com_sucesso(self):
         self.client.force_login(self.user)

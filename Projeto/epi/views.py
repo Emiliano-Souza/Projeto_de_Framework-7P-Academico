@@ -39,5 +39,8 @@ def registrar_entrega_view(request):
     return render(
         request,
         "epi/registrar_entrega.html",
-        {"form": form},
+        {
+            "form": form,
+            "titulo_pagina": "Registrar Entrega de EPI",
+        },
     )

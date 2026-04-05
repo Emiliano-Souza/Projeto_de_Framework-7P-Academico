@@ -123,5 +123,13 @@
 - criacao de template inicial de login
 - configuracao de redirecionamento apos autenticacao
 
+## Etapa 20 - Melhoria da Tela de Entrega
+
+- reorganizacao visual do template de entrega
+- exibicao mais clara de mensagens e erros de validacao
+- melhoria de labels, help texts e placeholders do formulario
+- uso de campo `datetime-local` para facilitar o preenchimento
+- ampliacao dos testes da interface e do formulario
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

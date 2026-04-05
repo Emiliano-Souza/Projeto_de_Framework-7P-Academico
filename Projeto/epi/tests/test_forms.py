@@ -38,3 +38,11 @@ class EntregaEPIFormTests(BaseModelTestCase):
         )
 
         self.assertTrue(form.is_valid(), form.errors)
+
+    def test_form_configura_campos_para_uso_na_interface(self):
+        form = EntregaEPIForm()
+
+        self.assertEqual(form.fields["funcionario"].empty_label, "Selecione um funcionário")
+        self.assertEqual(form.fields["epi_lote"].empty_label, "Selecione um lote disponível")
+        self.assertEqual(form.fields["data_entrega"].widget.input_type, "datetime-local")
+        self.assertIn("form-control", form.fields["observacao"].widget.attrs["class"])

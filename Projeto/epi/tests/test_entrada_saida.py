@@ -200,6 +200,15 @@ class EntregaEPIModelTests(BaseModelTestCase):
 
 
 class EntregaEPIServiceTests(BaseModelTestCase):
+    def test_service_bloqueia_entrega_com_quantidade_nao_positiva(self):
+        with self.assertRaises(ValidationError):
+            registrar_entrega_epi(
+                funcionario=self.funcionario,
+                epi_lote=self.lote,
+                quantidade_entregue=0,
+                usuario_entrega=self.user,
+            )
+
     def test_service_bloqueia_funcionario_inativo(self):
         self.funcionario.ativo = False
         self.funcionario.save(update_fields=["ativo"])
@@ -239,6 +248,15 @@ class EntregaEPIServiceTests(BaseModelTestCase):
         self.assertEqual(self.lote.quantidade_disponivel, 8)
         self.assertEqual(entrega.quantidade_entregue, 2)
         self.assertTrue(entrega.confirmado_recebimento)
+
+    def test_service_bloqueia_entrega_com_quantidade_negativa(self):
+        with self.assertRaises(ValidationError):
+            registrar_entrega_epi(
+                funcionario=self.funcionario,
+                epi_lote=self.lote,
+                quantidade_entregue=-1,
+                usuario_entrega=self.user,
+            )
 
     def test_service_registra_devolucao_com_sucesso(self):
         entrega = registrar_entrega_epi(

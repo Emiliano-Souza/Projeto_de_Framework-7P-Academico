@@ -165,6 +165,11 @@ def registrar_entrega_epi(
 ):
     data_entrega = data_entrega or timezone.now()
 
+    if quantidade_entregue <= 0:
+        raise ValidationError(
+            {"quantidade_entregue": "Informe uma quantidade entregue maior que zero."}
+        )
+
     _validar_funcionario_ativo(funcionario)
     _validar_lote_disponivel_para_entrega(
         epi_lote,

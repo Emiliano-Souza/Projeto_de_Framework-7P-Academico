@@ -51,6 +51,7 @@ Essa camada concentra validacoes explicitas de negocio, como:
 - funcionario ativo
 - lote nao vencido
 - saldo suficiente para a entrega
+- quantidade entregue positiva validada explicitamente no service
 - entrega existente para devolucao
 - quantidade devolvida positiva
 - devolucao limitada ao saldo pendente da entrega

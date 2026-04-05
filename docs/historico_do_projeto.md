@@ -240,5 +240,11 @@
 - ajuste das regras de negocio para refletir entrada, entrega, devolucao e baixa
 - sincronizacao final da documentacao com os fluxos e telas atuais
 
+## Etapa 35 - Consolidacao das Regras de Negocio
+
+- reforco da validacao explicita de quantidade positiva no service de entrega
+- ampliacao dos testes para cobrir entrega com quantidade zero e negativa
+- ajuste da documentacao para refletir a consolidacao das regras do service
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

@@ -137,6 +137,7 @@ Decisoes aplicadas:
 - unicidade por `epi` e `numero_lote`
 - constraint para garantir `quantidade_recebida > 0`
 - constraint para garantir `quantidade_disponivel >= 0`
+- constraint para garantir `quantidade_disponivel <= quantidade_recebida`
 - nome fisico da tabela definido como `epi_lote`
 
 ## Quinta Etapa Implementada
@@ -214,6 +215,11 @@ Decisoes aplicadas:
 
 ## Proximas Etapas Planejadas
 As tabelas principais previstas para a modelagem inicial foram concluidas.
+
+## Refinamentos Aplicados
+
+- validacao para impedir lote com saldo maior que a quantidade recebida
+- ajuste automatico do status de `entrega_epi` conforme o nivel de devolucao
 
 ## Principios de Modelagem
 Os principios adotados para a modelagem sao:

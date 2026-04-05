@@ -27,6 +27,11 @@ Essas operacoes precisam ocorrer dentro de transacao para evitar inconsistencias
 ### 6. Toda alteracao operacional relevante deve gerar movimentacao de estoque
 Entrega e devolucao devem gerar registros em `movimentacao_estoque`, preservando auditoria, historico e rastreabilidade.
 
+### 7. O saldo do lote nao pode ultrapassar a quantidade originalmente recebida
+Um lote nao pode registrar `quantidade_disponivel` maior que `quantidade_recebida`.
+
+Essa regra evita um estado invalido de estoque ja na camada de banco e tambem na validacao da aplicacao.
+
 ## Regras de Operacao Implementadas
 
 - funcionarios pertencem a um setor
@@ -35,3 +40,4 @@ Entrega e devolucao devem gerar registros em `movimentacao_estoque`, preservando
 - movimentacoes registram alteracoes no estoque
 - operacoes criticas de entrega e devolucao usam transacao
 - nao e permitido reduzir retroativamente quantidade entregue ou devolvida
+- o status da entrega acompanha automaticamente o nivel de devolucao

@@ -62,5 +62,10 @@
 - retorno automatica de saldo ao registrar devolucao
 - uso de transacao para preservar consistencia
 
+## Etapa 10 - Refinos de Integridade
+
+- regra para impedir saldo de lote acima da quantidade recebida
+- ajuste automatico do status da entrega com base na devolucao
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

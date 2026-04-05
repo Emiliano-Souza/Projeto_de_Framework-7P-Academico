@@ -112,7 +112,21 @@ class EPILote(models.Model):
                 condition=models.Q(quantidade_disponivel__gte=0),
                 name="ck_epi_lote_quantidade_disponivel_gte_0",
             ),
+            models.CheckConstraint(
+                condition=models.Q(quantidade_disponivel__lte=models.F("quantidade_recebida")),
+                name="ck_epi_lote_quantidade_disponivel_lte_recebida",
+            ),
         ]
+
+    def clean(self):
+        if self.quantidade_disponivel > self.quantidade_recebida:
+            raise ValidationError(
+                {
+                    "quantidade_disponivel": (
+                        "A quantidade disponivel nao pode ser maior que a quantidade recebida."
+                    )
+                }
+            )
 
     def __str__(self):
         return f"{self.epi.nome} - lote {self.numero_lote}"
@@ -189,6 +203,22 @@ class EntregaEPI(models.Model):
         if self.quantidade_devolvida > 0:
             if not self.usuario_devolucao_id:
                 errors["usuario_devolucao"] = "Informe o usuario da devolucao."
+        else:
+            self.data_devolucao = None
+            self.usuario_devolucao = None
+
+        if self.quantidade_devolvida == 0 and self.status == self.Status.DEVOLVIDO:
+            self.status = self.Status.ENTREGUE
+
+        if self.quantidade_devolvida == self.quantidade_entregue:
+            self.status = self.Status.DEVOLVIDO
+        elif self.quantidade_devolvida > 0:
+            self.status = self.Status.PARCIALMENTE_DEVOLVIDO
+        elif self.status in {
+            self.Status.DEVOLVIDO,
+            self.Status.PARCIALMENTE_DEVOLVIDO,
+        }:
+            self.status = self.Status.ENTREGUE
 
         if self.pk:
             entrega_anterior = (

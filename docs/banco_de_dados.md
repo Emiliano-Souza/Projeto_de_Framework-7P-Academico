@@ -223,6 +223,7 @@ As tabelas principais previstas para a modelagem inicial foram concluidas.
 
 - validacao para impedir lote com saldo maior que a quantidade recebida
 - ajuste automatico do status de `entrega_epi` conforme o nivel de devolucao
+- service de entrada de lote com geracao de `movimentacao_estoque` do tipo `entrada`
 
 ## Principios de Modelagem
 Os principios adotados para a modelagem sao:

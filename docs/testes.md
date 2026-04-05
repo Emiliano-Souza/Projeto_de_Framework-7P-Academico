@@ -54,6 +54,7 @@ Cobertura atual:
 - lote nao pode ter saldo maior que quantidade recebida
 - lote nao pode repetir `numero_lote` para o mesmo EPI
 - lote nao pode ter quantidade recebida invalida
+- entrada de lote via service gera movimentacao de `ENTRADA`
 
 ### 3. Entregas e devolucoes
 Cobertura atual:

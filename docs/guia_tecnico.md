@@ -14,6 +14,10 @@ Hoje ela centraliza:
 - baixa
 - persistencia operacional
 
+Enquanto isso, a entrada de lote foi isolada em:
+
+- `Projeto/epi/services/lotes.py`
+
 Trecho relevante:
 
 ```python
@@ -317,6 +321,7 @@ Causa comum:
 ## 15. Pontos que Ainda Merecem Evolucao
 
 - separar melhor usuario de devolucao e usuario de baixa
+- decidir se a entrada de lote tera fluxo web proprio ou integracao mais forte com admin
 - tratar estados mais sofisticados da entrega
 - adicionar listagens e dashboards
 - melhorar navegacao entre fluxos

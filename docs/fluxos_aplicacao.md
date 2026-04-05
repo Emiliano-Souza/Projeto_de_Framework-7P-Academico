@@ -13,6 +13,28 @@ Os tres fluxos seguem o mesmo desenho:
 5. o model e persistido
 6. a movimentacao de estoque e registrada
 
+## Fluxo de Entrada de Lote
+
+### Passo a passo
+
+1. a aplicacao chama `registrar_entrada_lote(...)`
+2. o service valida a quantidade recebida
+3. o lote e criado com `quantidade_disponivel` igual a `quantidade_recebida`
+4. o sistema cria `MovimentacaoEstoque` do tipo `ENTRADA`
+
+### Trecho central
+
+```python
+MovimentacaoEstoque.objects.create(
+    epi_lote=lote,
+    tipo_movimento=MovimentacaoEstoque.TipoMovimento.ENTRADA,
+    quantidade=quantidade_recebida,
+    quantidade_antes=0,
+    quantidade_depois=quantidade_recebida,
+    usuario=usuario_responsavel,
+)
+```
+
 ## Fluxo de Entrega
 
 ### Passo a passo

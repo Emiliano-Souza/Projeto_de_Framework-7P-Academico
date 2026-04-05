@@ -25,7 +25,7 @@ Ao registrar uma devolucao, o sistema deve devolver saldo ao lote.
 Essas operacoes precisam ocorrer dentro de transacao para evitar inconsistencias entre entrega registrada e saldo fisico.
 
 ### 6. Toda alteracao operacional relevante deve gerar movimentacao de estoque
-Entrega e devolucao devem gerar registros em `movimentacao_estoque`, preservando auditoria, historico e rastreabilidade.
+Entrada de lote, entrega, devolucao e baixa devem gerar registros em `movimentacao_estoque`, preservando auditoria, historico e rastreabilidade.
 
 ### 7. O saldo do lote nao pode ultrapassar a quantidade originalmente recebida
 Um lote nao pode registrar `quantidade_disponivel` maior que `quantidade_recebida`.
@@ -57,5 +57,6 @@ Essa camada concentra validacoes explicitas de negocio, como:
 - baixa com motivo operacional obrigatorio
 - baixa nao devolve quantidade ao estoque do lote
 - baixa gera movimentacao especifica com motivo associado
+- entrada de lote gera movimentacao do tipo `entrada`
 
 Com isso, a regra operacional fica mais visivel fora do model e a arquitetura fica mais preparada para views, formularios e evolucao futura.

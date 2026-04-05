@@ -217,5 +217,12 @@
 - detalhamento do fluxo interno de persistencia e criacao de movimentacoes
 - destaque dos pontos mais sensiveis para manutencao e refatoracao
 
+## Etapa 32 - Movimentacao de Entrada de Lote
+
+- criacao de service para registrar entrada de lote com usuario responsavel
+- geracao automatica de `movimentacao_estoque` do tipo `entrada`
+- ampliacao dos testes para validar entrada rastreavel de lote
+- atualizacao da documentacao tecnica para refletir a rastreabilidade da entrada
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

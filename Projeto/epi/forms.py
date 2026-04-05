@@ -1,7 +1,8 @@
 from django import forms
+from django.db.models import F
 from django.utils import timezone
 
-from epi.models import EPILote, Funcionario
+from epi.models import EPILote, EntregaEPI, Funcionario
 
 
 class EntregaEPIForm(forms.Form):
@@ -64,3 +65,40 @@ class EntregaEPIForm(forms.Form):
 
         self.fields["observacao"].widget.attrs["class"] = common_classes
         self.fields["confirmado_recebimento"].widget.attrs["class"] = checkbox_classes
+
+
+class DevolucaoEPIForm(forms.Form):
+    entrega = forms.ModelChoiceField(
+        queryset=EntregaEPI.objects.none(),
+        label="Entrega",
+        empty_label="Selecione uma entrega pendente",
+        help_text="Escolha uma entrega que ainda tenha itens para devolucao.",
+    )
+    quantidade_devolvida = forms.IntegerField(
+        min_value=1,
+        label="Quantidade devolvida",
+        help_text="Informe quantas unidades estao retornando ao estoque.",
+    )
+    observacao = forms.CharField(
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                "rows": 4,
+                "placeholder": "Adicione detalhes uteis sobre a devolucao, se necessario.",
+            }
+        ),
+        label="Observacao",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["entrega"].queryset = (
+            EntregaEPI.objects.select_related("funcionario", "epi_lote", "epi_lote__epi")
+            .filter(quantidade_devolvida__lt=F("quantidade_entregue"))
+            .order_by("-data_entrega", "-id")
+        )
+
+        common_classes = "form-control"
+        self.fields["entrega"].widget.attrs["class"] = common_classes
+        self.fields["quantidade_devolvida"].widget.attrs["class"] = common_classes
+        self.fields["observacao"].widget.attrs["class"] = common_classes

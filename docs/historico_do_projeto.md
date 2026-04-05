@@ -139,5 +139,12 @@
 - criacao do modulo `urls/entregas.py` para as rotas do fluxo de entrega
 - manutencao das URLs e nomes existentes sem alterar comportamento
 
+## Etapa 22 - Formulario de Devolucao
+
+- criacao do formulario inicial de devolucao de EPI
+- filtragem para exibir apenas entregas com devolucao pendente
+- preparacao da interface com labels, help texts e campos padronizados
+- ampliacao dos testes para validar a estrutura do novo formulario
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

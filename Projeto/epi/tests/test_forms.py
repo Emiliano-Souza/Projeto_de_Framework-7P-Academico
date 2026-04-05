@@ -1,6 +1,6 @@
 from django.utils import timezone
 
-from epi.forms import DevolucaoEPIForm, EntregaEPIForm
+from epi.forms import BaixaEPIForm, DevolucaoEPIForm, EntregaEPIForm
 from epi.models import EntregaEPI, Funcionario
 from epi.tests.base import BaseModelTestCase
 
@@ -99,4 +99,63 @@ class DevolucaoEPIFormTests(BaseModelTestCase):
 
         self.assertEqual(form.fields["entrega"].empty_label, "Selecione uma entrega pendente")
         self.assertIn("form-control", form.fields["entrega"].widget.attrs["class"])
+        self.assertIn("form-control", form.fields["observacao"].widget.attrs["class"])
+
+
+class BaixaEPIFormTests(BaseModelTestCase):
+    def test_form_lista_apenas_entregas_com_saldo_em_aberto_para_baixa(self):
+        entrega_elegivel = EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=4,
+            quantidade_devolvida=1,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+            usuario_devolucao=self.user,
+        )
+        entrega_sem_saldo = EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=3,
+            quantidade_devolvida=1,
+            quantidade_baixada=2,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+            usuario_devolucao=self.user,
+        )
+
+        form = BaixaEPIForm()
+
+        self.assertIn(entrega_elegivel, form.fields["entrega"].queryset)
+        self.assertNotIn(entrega_sem_saldo, form.fields["entrega"].queryset)
+
+    def test_form_aceita_dados_validos_para_baixa(self):
+        entrega = EntregaEPI.objects.create(
+            funcionario=self.funcionario,
+            epi_lote=self.lote,
+            quantidade_entregue=3,
+            data_entrega=timezone.now(),
+            usuario_entrega=self.user,
+        )
+
+        form = BaixaEPIForm(
+            data={
+                "entrega": entrega.pk,
+                "quantidade_baixada": 1,
+                "motivo_baixa": "danificado",
+                "observacao": "Item retornou sem condicoes de uso",
+            }
+        )
+
+        self.assertTrue(form.is_valid(), form.errors)
+
+    def test_form_configura_campos_para_uso_na_interface(self):
+        form = BaixaEPIForm()
+
+        self.assertEqual(
+            form.fields["entrega"].empty_label,
+            "Selecione uma entrega com saldo em aberto",
+        )
+        self.assertEqual(form.fields["motivo_baixa"].choices, BaixaEPIForm.MOTIVOS_BAIXA)
+        self.assertIn("form-control", form.fields["motivo_baixa"].widget.attrs["class"])
         self.assertIn("form-control", form.fields["observacao"].widget.attrs["class"])

@@ -170,5 +170,13 @@
 - ampliacao dos testes para validar a nova integridade estrutural
 - criacao da migracao inicial da estrutura de baixa
 
+## Etapa 26 - Formulario de Baixa
+
+- criacao do formulario inicial de baixa de EPI
+- filtragem para exibir apenas entregas com saldo em aberto para baixa
+- padronizacao dos motivos de baixa no formulario
+- preparacao da interface com labels, help texts e campos padronizados
+- ampliacao dos testes para validar a estrutura do novo formulario
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

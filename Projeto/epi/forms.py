@@ -102,3 +102,53 @@ class DevolucaoEPIForm(forms.Form):
         self.fields["entrega"].widget.attrs["class"] = common_classes
         self.fields["quantidade_devolvida"].widget.attrs["class"] = common_classes
         self.fields["observacao"].widget.attrs["class"] = common_classes
+
+
+class BaixaEPIForm(forms.Form):
+    MOTIVOS_BAIXA = [
+        ("extraviado", "Extraviado"),
+        ("danificado", "Danificado"),
+        ("vencido", "Vencido"),
+        ("descartado", "Descartado"),
+    ]
+
+    entrega = forms.ModelChoiceField(
+        queryset=EntregaEPI.objects.none(),
+        label="Entrega",
+        empty_label="Selecione uma entrega com saldo em aberto",
+        help_text="Escolha uma entrega que ainda tenha quantidade disponivel para baixa.",
+    )
+    quantidade_baixada = forms.IntegerField(
+        min_value=1,
+        label="Quantidade baixada",
+        help_text="Informe quantas unidades serao encerradas sem retorno ao estoque.",
+    )
+    motivo_baixa = forms.ChoiceField(
+        choices=MOTIVOS_BAIXA,
+        label="Motivo da baixa",
+        help_text="Selecione o motivo que justifica a baixa da quantidade informada.",
+    )
+    observacao = forms.CharField(
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                "rows": 4,
+                "placeholder": "Adicione detalhes uteis sobre a baixa, se necessario.",
+            }
+        ),
+        label="Observacao",
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["entrega"].queryset = (
+            EntregaEPI.objects.select_related("funcionario", "epi_lote", "epi_lote__epi")
+            .filter(quantidade_devolvida__lt=(F("quantidade_entregue") - F("quantidade_baixada")))
+            .order_by("-data_entrega", "-id")
+        )
+
+        common_classes = "form-control"
+        self.fields["entrega"].widget.attrs["class"] = common_classes
+        self.fields["quantidade_baixada"].widget.attrs["class"] = common_classes
+        self.fields["motivo_baixa"].widget.attrs["class"] = common_classes
+        self.fields["observacao"].widget.attrs["class"] = common_classes

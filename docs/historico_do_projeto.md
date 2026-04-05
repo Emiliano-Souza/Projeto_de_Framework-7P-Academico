@@ -202,5 +202,13 @@
 - atualizacao do README com foco maior em onboarding tecnico
 - atualizacao da documentacao de testes para refletir o estado atual da suite
 
+## Etapa 30 - Aprofundamento da Documentacao para Dev
+
+- detalhamento de dependencias entre modulos do Django
+- detalhamento do fluxo interno de persistencia com transacao e lock
+- registro explicito de invariantes do dominio
+- inclusao de troubleshooting tecnico recorrente
+- inclusao de checklist tecnico para evolucao de novas funcionalidades
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

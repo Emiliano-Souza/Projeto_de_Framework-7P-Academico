@@ -71,6 +71,14 @@ Por que isso importa:
 - evita inconsistencias em operacoes concorrentes
 - garante que lote e entrega sejam atualizados juntos
 
+Trecho complementar:
+
+```python
+super(EntregaEPI, entrega).save(*args, **kwargs)
+```
+
+Esse detalhe merece atencao: a funcao salva a instancia sem chamar novamente o `save()` sobrescrito do model. Isso evita recursao infinita.
+
 ## 4. Deltas em vez de Regra Duplicada
 
 O projeto nao grava "saldo final" diretamente dentro da entrega. Em vez disso, compara o estado anterior com o novo estado do registro:
@@ -88,6 +96,14 @@ Essa estrategia permite:
 - atualizacao por baixa
 
 sem duplicar fluxos separados de persistencia.
+
+Esse desenho tem uma vantagem forte: a mesma infraestrutura consegue tratar:
+
+- criacao inicial de entrega
+- devolucao posterior
+- baixa posterior
+
+com um unico caminho de persistencia.
 
 ## 5. Particularidade do Django: testes podem passar e o banco real ainda estar atrasado
 
@@ -144,6 +160,16 @@ Beneficios:
 - menos chance de submit invalido
 - interface mais coerente com as regras
 
+Limite dessa abordagem:
+
+- filtro de queryset melhora a UX
+- mas nao substitui validacao no service
+
+Por isso o projeto valida nas duas camadas:
+
+- form reduz opcoes invalidas
+- service protege a regra de negocio real
+
 ## 8. Por Que `PROTECT` Foi Escolhido
 
 O projeto usa `on_delete=PROTECT` em entidades historicas porque excluir registros centrais poderia corromper o historico operacional.
@@ -171,7 +197,39 @@ Repare que `delta_baixa` nao participa da conta do lote.
 
 Isso foi intencional.
 
-## 10. Como Ler os Testes
+Em compensacao, a baixa gera movimentacao propria:
+
+```python
+MovimentacaoEstoque.objects.create(
+    tipo_movimento=MovimentacaoEstoque.TipoMovimento.BAIXA,
+    quantidade=delta_baixa,
+    quantidade_antes=saldo_cursor,
+    quantidade_depois=saldo_cursor,
+)
+```
+
+Esse padrao documenta o evento sem alterar fisicamente o saldo do lote.
+
+## 10. Armadilhas Reais Ja Encontradas no Projeto
+
+### 1. Banco real sem migracao
+Ja aconteceu neste projeto: o codigo passou nos testes, mas a tela falhou porque o banco do container ainda nao tinha a coluna nova.
+
+Licao:
+
+- nunca encerrar etapa de banco sem `migrate`
+
+### 2. View protegida sem rota de login
+Tambem ja aconteceu: a view usava `login_required`, mas o projeto ainda nao tinha as URLs de autenticacao ligadas.
+
+Licao:
+
+- autenticacao no Django depende de configuracao explicita das rotas
+
+### 3. Texto de validacao diferente entre camadas
+Alguns erros vem do form e outros do service. Em manutencao futura, vale observar de onde cada mensagem esta surgindo para nao corrigir no lugar errado.
+
+## 11. Como Ler os Testes
 
 Os testes foram organizados para refletir riscos do projeto:
 
@@ -187,7 +245,23 @@ Leitura recomendada:
 3. `views/`
 4. `forms.py`
 
-## 11. Comandos Tecnicos Mais Usados
+## 12. Checklist Tecnico Para Nova Funcionalidade
+
+Quando adicionar um fluxo novo, a sequencia recomendada e:
+
+1. ajustar model ou banco, se necessario
+2. criar migracao
+3. implementar service
+4. implementar form
+5. implementar view e URL
+6. criar template
+7. escrever testes de dominio
+8. escrever testes da view/form
+9. rodar `test`
+10. rodar `migrate`
+11. validar no navegador
+
+## 13. Comandos Tecnicos Mais Usados
 
 ### Rodar testes
 
@@ -213,7 +287,34 @@ docker compose exec django python manage.py createsuperuser
 docker compose up --build
 ```
 
-## 12. Pontos que Ainda Merecem Evolucao
+## 14. Troubleshooting Rapido
+
+### Erro: coluna nao existe
+Causa comum:
+
+- model mudou
+- migracao existe
+- banco real ainda nao recebeu `migrate`
+
+### Erro: `/accounts/login/` nao encontrado
+Causa comum:
+
+- `login_required` ativo
+- URLs de autenticacao do Django nao configuradas
+
+### Teste passa e tela falha
+Causa comum:
+
+- banco de teste atualizado
+- banco real atrasado
+
+### Formulario nao mostra registros esperados
+Causa comum:
+
+- queryset filtrado no form
+- operacao ja nao eh mais elegivel pelo estado atual da entrega ou do lote
+
+## 15. Pontos que Ainda Merecem Evolucao
 
 - separar melhor usuario de devolucao e usuario de baixa
 - tratar estados mais sofisticados da entrega

@@ -140,6 +140,86 @@ Interpretacao:
 - devolucao devolve saldo ao lote
 - baixa nao altera o lote
 
+## Fluxo Interno de Persistencia
+
+Quando qualquer operacao altera `EntregaEPI`, a sequencia tecnica e:
+
+1. o service instancia ou carrega uma `EntregaEPI`
+2. os campos operacionais sao atualizados
+3. `persistir_entrega_epi(...)` abre transacao
+4. o lote e lido com `select_for_update`
+5. o estado anterior da entrega e recuperado, quando existe
+6. os deltas sao calculados
+7. o saldo do lote e recalculado
+8. o registro da entrega e salvo
+9. as movimentacoes necessarias sao criadas
+
+Em pseudo-fluxo:
+
+```text
+service
+-> transaction.atomic()
+-> lock no lote
+-> carregar entrega anterior
+-> validar invariantes
+-> salvar lote
+-> salvar entrega
+-> criar movimentacoes
+```
+
+## Invariantes do Dominio
+
+Os fluxos atuais respeitam invariantes importantes:
+
+- `quantidade_entregue > 0`
+- `quantidade_devolvida >= 0`
+- `quantidade_baixada >= 0`
+- `quantidade_devolvida + quantidade_baixada <= quantidade_entregue`
+- `quantidade_disponivel <= quantidade_recebida`
+- lote nao pode ficar com saldo negativo
+
+Essas invariantes estao distribuidas entre:
+
+- constraints do banco
+- validacoes de model
+- validacoes de service
+
+## Onde Cada Regra Vive
+
+### No banco
+Exemplos:
+
+- checks de quantidade
+- unicidade por lote
+- limites de quantidade em `EntregaEPI`
+
+### No model
+Exemplos:
+
+- protecao de `usuario_devolucao` quando existe devolucao
+- validacao da soma `devolucao + baixa`
+
+### No service
+Exemplos:
+
+- funcionario ativo
+- lote vencido
+- saldo pendente de devolucao
+- saldo em aberto da baixa
+- criacao das movimentacoes
+
+## Por Que Nem Tudo Esta So no Banco
+
+Algumas regras exigem contexto de operacao, nao apenas comparacao entre colunas.
+
+Exemplos:
+
+- verificar se o funcionario esta ativo
+- verificar se o lote venceu em relacao a uma data de referencia
+- decidir qual movimentacao criar e com qual usuario
+
+Essas regras sao mais adequadas para service.
+
 ## Por Que a Baixa Nao Muda o Lote
 O lote ja foi reduzido no momento da entrega.
 
@@ -169,6 +249,20 @@ Isso mostra que:
 - nao baixar quantidade zero ou negativa
 - nao baixar sem motivo
 - nao usar baixa para aumentar estoque
+
+## Pontos de Atencao para Evolucao
+
+### 1. Semantica de usuario de baixa
+Hoje a baixa reutiliza `usuario_devolucao`. Funciona operacionalmente, mas nao e o nome ideal para manutencao futura.
+
+### 2. Status da entrega
+O status atual ainda e simples. Se o projeto passar a misturar mais cenarios de devolucao parcial e baixa parcial, talvez seja necessario evoluir:
+
+- o conjunto de status
+- ou o modelo de encerramento por item
+
+### 3. Entrada de estoque
+O projeto ja registra entrega, devolucao e baixa, mas ainda nao tem fluxo web de entrada de lote.
 
 ## Onde Ler no Codigo
 

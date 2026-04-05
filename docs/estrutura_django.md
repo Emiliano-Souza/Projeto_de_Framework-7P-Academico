@@ -209,6 +209,80 @@ request HTTP
 -> PostgreSQL
 ```
 
+## Mapa Tecnico de Arquivos
+
+Para leitura rapida do codigo, estes sao os pontos mais importantes:
+
+- `Projeto/config/settings.py`: configuracao global, banco, templates e autenticacao
+- `Projeto/config/urls.py`: roteamento principal do projeto
+- `Projeto/epi/models.py`: entidades, constraints e delegacao de persistencia
+- `Projeto/epi/forms.py`: filtros de interface e validacao de entrada
+- `Projeto/epi/services/entregas.py`: regra operacional principal
+- `Projeto/epi/views/`: camada HTTP
+- `Projeto/epi/urls/`: agrupamento de rotas por fluxo
+- `Projeto/epi/tests/`: validacao automatizada de dominio e interface
+
+## Dependencias Entre Modulos
+
+O desenho atual tenta manter uma direcao clara de dependencias:
+
+- `views` dependem de `forms` e `services`
+- `forms` dependem de `models`
+- `services` dependem de `models`
+- `models` nao dependem de `views`
+
+Existe uma excecao controlada:
+
+- `EntregaEPI.save()` importa o service localmente para delegar persistencia
+
+Essa importacao tardia foi escolhida para:
+
+- evitar circular import no carregamento do modulo
+- manter o admin e o ORM coerentes com a regra do dominio
+
+## Convencoes de Organizacao Adotadas
+
+### 1. Agrupar por fluxo funcional
+Por isso existem:
+
+- `views/entregas.py`
+- `views/devolucoes.py`
+- `views/baixas.py`
+
+e:
+
+- `urls/entregas.py`
+- `urls/devolucoes.py`
+- `urls/baixas.py`
+
+### 2. Manter services orientados a caso de uso
+O arquivo `services/entregas.py` hoje concentra mais de um fluxo porque todos giram em torno de `EntregaEPI`. Se a complexidade crescer, um proximo passo natural eh separar em:
+
+- `services/entregas.py`
+- `services/devolucoes.py`
+- `services/baixas.py`
+- `services/persistencia_entrega.py`
+
+### 3. Formularios como filtro tecnico da interface
+Os forms nao sao usados apenas para renderizacao; eles reduzem estados invalidos visiveis para o operador.
+
+## Sequencia de Leitura Recomendada para Dev
+
+Se alguem novo entrar no projeto e quiser entender rapido:
+
+1. ler `Projeto/epi/models.py`
+2. ler `Projeto/epi/services/entregas.py`
+3. ler `Projeto/epi/forms.py`
+4. ler `Projeto/epi/views/`
+5. ler `Projeto/epi/tests/test_entrada_saida.py`
+
+Essa ordem funciona bem porque vai:
+
+- da estrutura do dominio
+- para a regra operacional
+- para a interface
+- para a validacao automatizada
+
 ## Particularidades Importantes do Projeto
 
 ### 1. A regra principal nao fica mais escondida na view
@@ -222,6 +296,15 @@ Mesmo com service, a sobrescrita de `save()` em `EntregaEPI` preserva coerencia 
 
 ### 4. O banco real pode divergir do codigo se `migrate` nao for executado
 Os testes usam banco temporario. Por isso, rodar teste com sucesso nao substitui aplicar migracao no banco real do container.
+
+### 5. O projeto usa abordagem hibrida entre model e service
+Ele nao e um projeto Django "fat models" puro, nem um projeto com dominio 100% fora do ORM.
+
+Hoje a decisao pratica eh:
+
+- integridade estrutural no model
+- orquestracao operacional no service
+- compatibilidade de persistencia mantida no `save()`
 
 ## Resumo
 Para um dev novo no projeto, a leitura recomendada e:

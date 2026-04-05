@@ -17,10 +17,21 @@ Entidades centrais do dominio devem priorizar protecao referencial e desativacao
 ### 4. Estoque real nao deve ficar apenas na tabela de EPI
 O saldo de estoque precisa ser representado por lotes, evitando inconsistencias entre cadastro do item e controle fisico.
 
-## Regras Previstas Para as Proximas Etapas
+### 5. Operacoes de entrega e devolucao devem preservar consistencia do lote
+Ao registrar uma entrega, o sistema deve baixar a quantidade disponivel do lote.
+
+Ao registrar uma devolucao, o sistema deve devolver saldo ao lote.
+
+Essas operacoes precisam ocorrer dentro de transacao para evitar inconsistencias entre entrega registrada e saldo fisico.
+
+### 6. Toda alteracao operacional relevante deve gerar movimentacao de estoque
+Entrega e devolucao devem gerar registros em `movimentacao_estoque`, preservando auditoria, historico e rastreabilidade.
+
+## Regras de Operacao Implementadas
 
 - funcionarios pertencem a um setor
 - um EPI pode possuir varios lotes
-- entregas devem apontar para funcionario e lote
-- movimentacoes devem registrar alteracoes no estoque
-- operacoes criticas devem ser feitas em transacao
+- entregas apontam para funcionario e lote
+- movimentacoes registram alteracoes no estoque
+- operacoes criticas de entrega e devolucao usam transacao
+- nao e permitido reduzir retroativamente quantidade entregue ou devolvida

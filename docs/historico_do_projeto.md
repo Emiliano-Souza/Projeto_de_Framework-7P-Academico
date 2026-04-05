@@ -55,5 +55,12 @@
 - constraints basicas para integridade dos registros
 - exposicao de `movimentacao_estoque` no admin do Django
 
+## Etapa 9 - Regra Operacional de Entrega e Devolucao
+
+- integracao entre `entrega_epi`, `epi_lote` e `movimentacao_estoque`
+- baixa automatica do lote ao registrar entrega
+- retorno automatica de saldo ao registrar devolucao
+- uso de transacao para preservar consistencia
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

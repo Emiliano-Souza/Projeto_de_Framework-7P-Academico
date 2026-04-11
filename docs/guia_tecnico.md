@@ -222,6 +222,7 @@ Ja aconteceu neste projeto: o codigo passou nos testes, mas a tela falhou porque
 Licao:
 
 - nunca encerrar etapa de banco sem `migrate`
+- o `entrypoint.sh` ja executa `migrate` automaticamente, mas ao adicionar colunas novas em desenvolvimento, reinicie o container ou rode `migrate` manualmente
 
 ### 2. View protegida sem rota de login
 Tambem ja aconteceu: a view usava `login_required`, mas o projeto ainda nao tinha as URLs de autenticacao ligadas.
@@ -232,6 +233,22 @@ Licao:
 
 ### 3. Texto de validacao diferente entre camadas
 Alguns erros vem do form e outros do service. Em manutencao futura, vale observar de onde cada mensagem esta surgindo para nao corrigir no lugar errado.
+
+### 4. CSS duplicado em cada template
+Ja aconteceu: cada template tinha seu proprio bloco `<style>` com variaveis e regras repetidas.
+
+Licao:
+
+- CSS deve ficar em `static/epi/epi.css` e ser referenciado via `{% load static %}` e `{% static 'epi/epi.css' %}`
+- nunca adicionar CSS inline nos templates
+
+### 5. URLs hardcoded nos templates
+Ja aconteceu: os templates usavam strings como `/entregas/nova/` diretamente.
+
+Licao:
+
+- sempre usar `{% url 'namespace:name' %}` nos templates
+- URLs hardcoded quebram silenciosamente quando as rotas mudam
 
 ## 11. Como Ler os Testes
 
@@ -324,7 +341,6 @@ Causa comum:
 - decidir se a entrada de lote tera fluxo web proprio ou integracao mais forte com admin
 - tratar estados mais sofisticados da entrega
 - adicionar listagens e dashboards
-- melhorar navegacao entre fluxos
 - ampliar documentacao de deploy
 
 ## Resumo

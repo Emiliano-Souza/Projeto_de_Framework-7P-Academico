@@ -83,7 +83,7 @@ Cobertura atual:
 ### 5. Movimentacoes de estoque
 Cobertura atual:
 
-- movimentacao com quantidade zero e invalida
+- movimentacao com quantidade zero e invalida (validada via `clean()` no model)
 - movimentacao com saldo final negativo e invalida
 - tipo `BAIXA` disponivel na camada de dominio
 

@@ -161,6 +161,7 @@ Campos atuais:
 - `confirmado_recebimento`
 - `usuario_entrega_id`
 - `usuario_devolucao_id`
+- `usuario_baixa_id`
 - `observacao`
 - `created_at`
 - `updated_at`
@@ -171,6 +172,7 @@ Decisoes aplicadas:
 - relacionamento com `funcionario` usando `PROTECT`
 - relacionamento com `epi_lote` usando `PROTECT`
 - uso de `auth_user` do Django para registrar usuarios da operacao
+- `usuario_baixa` separado de `usuario_devolucao` para preservar historico correto
 - `data_entrega` indexada
 - `status` implementado com `choices`
 - constraint para garantir `quantidade_entregue > 0`
@@ -214,6 +216,7 @@ Decisoes aplicadas:
 - constraint para garantir `quantidade > 0`
 - constraint para garantir `quantidade_antes >= 0`
 - constraint para garantir `quantidade_depois >= 0`
+- validacao explicita via `clean()` no model para `quantidade > 0` e `quantidade_depois >= 0`
 - nome fisico da tabela definido como `movimentacao_estoque`
 
 ## Proximas Etapas Planejadas

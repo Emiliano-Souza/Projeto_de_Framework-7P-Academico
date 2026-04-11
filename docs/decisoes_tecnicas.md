@@ -97,6 +97,68 @@ Motivo:
 - a baixa eh um evento operacional, nao uma devolucao
 - isso preserva o sentido correto do saldo do lote
 
+## 13. CSS e Templates Padronizados pelo Django
+Decisao:
+Extrair todo o CSS dos templates para um arquivo estatico unico em `epi/static/epi/epi.css`, seguindo a convencao de pastas do Django (`<app>/static/<app>/`).
+
+Motivo:
+
+- elimina duplicacao de estilos entre templates
+- facilita manutencao visual centralizada
+- segue o padrao nativo do `django.contrib.staticfiles`
+- dispensa configuracao manual de `STATICFILES_DIRS`
+
+## 14. Navbar como Componente Reutilizavel
+Decisao:
+Extrair a barra de navegacao para `templates/epi/navbar.html` e incluir via `{% include %}` em todos os templates.
+
+Motivo:
+
+- elimina duplicacao de HTML de navegacao
+- centraliza manutencao da navbar em um unico arquivo
+- usa `request.path` para detectar o link ativo dinamicamente
+
+## 15. URLs via `{% url %}` nos Templates
+Decisao:
+Substituir todas as URLs hardcoded nos templates pelo tag `{% url 'namespace:name' %}` do Django.
+
+Motivo:
+
+- evita quebra silenciosa quando rotas mudam
+- segue a convencao padrao do Django
+- centraliza a definicao de rotas nos arquivos `urls/`
+
+## 16. Helper Centralizado de ValidationError nas Views
+Decisao:
+Extrair o bloco `try/except ValidationError` repetido nas 3 views para um helper em `views/utils.py`.
+
+Motivo:
+
+- elimina duplicacao de codigo entre views
+- facilita manutencao e evolucao do tratamento de erros
+- mantem as views limpas e focadas no fluxo HTTP
+
+## 17. Paginacao na Tela de Movimentacoes
+Decisao:
+Adicionar `Paginator` do Django na view de movimentacoes com 50 itens por pagina.
+
+Motivo:
+
+- evita carregamento de todos os registros em memoria
+- melhora performance conforme o volume de dados cresce
+- usa o mecanismo nativo do Django sem dependencias externas
+
+## 18. Template Base Compartilhado
+Decisao:
+Criar `epi/base.html` com a estrutura HTML comum e fazer todos os templates estenderem via `{% extends %}`.
+
+Motivo:
+
+- elimina repeticao de `<!DOCTYPE>`, `<head>`, `{% load static %}` e `{% include navbar %}` em cada template
+- qualquer mudanca estrutural e feita em um unico lugar
+- segue o padrao nativo de heranca de templates do Django
+- o `login.html` tambem estende o mesmo base, mantendo visual consistente
+
 ## 12. Manter documentacao tecnica junto da evolucao do codigo
 Decisao:
 Atualizar a documentacao a cada etapa importante do projeto.

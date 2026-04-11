@@ -256,5 +256,25 @@
 - migracao `0009_entrega_epi_usuario_baixa` criada
 - documentacao atualizada para refletir todas as correcoes
 
+## Etapa 37 - Padronizacao da Camada Web
+
+- CSS extraido dos templates para `epi/static/epi/epi.css` seguindo convencao do Django
+- `STATICFILES_DIRS` removido do `settings.py` — desnecessario com a convencao `<app>/static/<app>/`
+- navbar extraida para componente `templates/epi/navbar.html` incluido via `{% include %}`
+- link ativo na navbar detectado dinamicamente via `request.path`
+- todas as URLs hardcoded nos templates substituidas por `{% url %}`
+- bloco `try/except ValidationError` duplicado nas views extraido para `views/utils.py`
+- `Paginator` adicionado na view de movimentacoes com 50 itens por pagina
+- bloco `DATABASES` SQLite morto removido do `settings.py`
+- documentacao atualizada para refletir todas as mudancas
+
+## Etapa 38 - Template Base e Padronizacao de Login
+
+- `epi/base.html` criado com estrutura HTML, `{% load static %}`, link do CSS e inclusao da navbar
+- todos os templates refatorados para `{% extends "epi/base.html" %}` com `{% block content %}`
+- `login.html` refatorado para estender `epi/base.html`, mantendo visual consistente
+- `AUTH_PASSWORD_VALIDATORS` esvaziado para facilitar criacao de usuarios em desenvolvimento
+- documentacao atualizada
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

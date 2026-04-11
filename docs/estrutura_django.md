@@ -143,14 +143,18 @@ Views organizadas por dominio funcional:
 - `views/entregas.py`
 - `views/devolucoes.py`
 - `views/baixas.py`
+- `views/movimentacoes.py`
+- `views/utils.py`: helper `aplicar_erros_ao_form` compartilhado entre as views
 
 Cada view:
 
 - exige autenticacao
 - instancia formulario
 - chama o service correspondente
-- trata `ValidationError`
+- trata `ValidationError` via helper centralizado
 - exibe mensagens de sucesso ou erro
+
+A view de movimentacoes usa `Paginator` do Django para paginar os resultados em 50 itens por pagina.
 
 ### `Projeto/epi/urls/`
 Rotas separadas por fluxo:
@@ -164,15 +168,24 @@ Essa separacao evita que um unico arquivo cresca demais conforme o projeto evolu
 ### `Projeto/epi/templates/epi/`
 Templates HTML dos fluxos web:
 
+- `base.html`: template base com estrutura HTML, `{% load static %}`, link do CSS e inclusao da navbar. Todos os outros templates estendem este via `{% extends "epi/base.html" %}`
+- `navbar.html`: componente de navegacao incluido pelo `base.html` via `{% include %}`
 - `registrar_entrega.html`
 - `registrar_devolucao.html`
 - `registrar_baixa.html`
+- `listar_movimentacoes.html`
 
-Os templates atuais priorizam:
+Os templates atuais:
 
-- clareza da operacao
-- mensagens de erro e sucesso
-- navegacao basica entre fluxos
+- nao possuem CSS inline nem estrutura HTML repetida
+- estendem `base.html` e definem apenas `{% block title %}` e `{% block content %}`
+- usam `{% url %}` para todas as rotas, sem URLs hardcoded
+- incluem controles de paginacao na tela de movimentacoes
+
+### `Projeto/templates/registration/`
+Templates de autenticacao do Django:
+
+- `login.html`: estende `epi/base.html` para manter visual consistente com o restante do sistema
 
 ### `Projeto/epi/tests/`
 Suite de testes separada por responsabilidade:
@@ -185,6 +198,13 @@ Suite de testes separada por responsabilidade:
 - views
 
 Essa organizacao ajuda a manter cobertura tecnica sem concentrar tudo em um unico arquivo.
+
+### `Projeto/epi/static/epi/`
+Arquivos estaticos da app:
+
+- `epi.css`: folha de estilos unica e compartilhada por todos os templates
+
+O Django descobre essa pasta automaticamente via `django.contrib.staticfiles` sem necessidade de `STATICFILES_DIRS`.
 
 ## Fluxo de Dependencia Entre Camadas
 
@@ -219,7 +239,11 @@ Para leitura rapida do codigo, estes sao os pontos mais importantes:
 - `Projeto/epi/forms.py`: filtros de interface e validacao de entrada
 - `Projeto/epi/services/entregas.py`: regra operacional principal
 - `Projeto/epi/views/`: camada HTTP
+- `Projeto/epi/views/utils.py`: helper de tratamento de ValidationError
 - `Projeto/epi/urls/`: agrupamento de rotas por fluxo
+- `Projeto/epi/templates/epi/base.html`: template base compartilhado por todos os templates
+- `Projeto/epi/templates/epi/navbar.html`: componente de navegacao
+- `Projeto/epi/static/epi/epi.css`: estilos compartilhados
 - `Projeto/epi/tests/`: validacao automatizada de dominio e interface
 
 ## Dependencias Entre Modulos

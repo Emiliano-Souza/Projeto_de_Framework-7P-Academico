@@ -55,8 +55,12 @@ Dentro da app `epi`, a organizacao principal esta distribuida em:
 - `forms.py`: formularios operacionais
 - `services/`: regra de negocio e orquestracao
 - `views/`: camada HTTP
+- `views/utils.py`: helper compartilhado de tratamento de erros
 - `urls/`: agrupamento de rotas por fluxo
 - `templates/epi/`: telas HTML dos fluxos
+- `templates/epi/base.html`: template base com estrutura HTML, CSS e navbar
+- `templates/epi/navbar.html`: componente de navegacao incluido pelo base
+- `static/epi/epi.css`: folha de estilos compartilhada
 - `tests/`: cobertura automatizada por responsabilidade
 
 ## Componentes Funcionais Atuais

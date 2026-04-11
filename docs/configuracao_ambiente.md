@@ -40,8 +40,13 @@ Para subir o ambiente local e evitar divergencia entre codigo e banco:
 ```powershell
 cd .\Projeto
 docker compose up --build
-docker compose exec django python manage.py migrate
 docker compose exec django python manage.py test
+```
+
+O `entrypoint.sh` ja executa `migrate` automaticamente ao subir o container. Quando houver migracoes novas, basta reiniciar o container ou rodar manualmente:
+
+```powershell
+docker compose exec django python manage.py migrate
 ```
 
 Se for acessar telas protegidas por login:

@@ -135,7 +135,7 @@ def persistir_entrega_epi(entrega, *args, **kwargs):
                 quantidade_depois=saldo_cursor,
                 funcionario=entrega.funcionario,
                 entrega_epi=entrega,
-                usuario=entrega.usuario_devolucao or entrega.usuario_entrega,
+                usuario=entrega.usuario_baixa or entrega.usuario_entrega,
                 motivo="Baixa de EPI",
                 observacao=entrega.observacao,
             )
@@ -262,7 +262,7 @@ def registrar_baixa_epi(
         )
 
     entrega.quantidade_baixada += quantidade_baixada
-    entrega.usuario_devolucao = usuario_baixa
+    entrega.usuario_baixa = usuario_baixa
 
     if observacao:
         entrega.observacao = f"[{motivo_baixa}] {observacao}"

@@ -173,6 +173,13 @@ class EntregaEPI(models.Model):
         null=True,
         blank=True,
     )
+    usuario_baixa = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="baixas_epi_registradas",
+        null=True,
+        blank=True,
+    )
     observacao = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -291,6 +298,12 @@ class MovimentacaoEstoque(models.Model):
                 name="ck_mov_estoque_quantidade_depois_gte_0",
             ),
         ]
+
+    def clean(self):
+        if self.quantidade == 0:
+            raise ValidationError({"quantidade": "A quantidade deve ser maior que zero."})
+        if self.quantidade_depois < 0:
+            raise ValidationError({"quantidade_depois": "O saldo resultante nao pode ser negativo."})
 
     def __str__(self):
         return f"{self.get_tipo_movimento_display()} - {self.epi_lote.numero_lote}"

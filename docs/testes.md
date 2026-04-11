@@ -103,7 +103,11 @@ docker compose exec django python manage.py test
 ```
 
 ## Resultado Atual
-A suite atual possui 58 testes automatizados e todos passaram na validacao mais recente executada dentro do container Django.
+A suite atual possui 58 testes automatizados. Para executar e validar o estado atual:
+
+```powershell
+docker compose exec django python manage.py test
+```
 
 ## O Que os Testes Ja Garantem
 Os testes ja garantem que:

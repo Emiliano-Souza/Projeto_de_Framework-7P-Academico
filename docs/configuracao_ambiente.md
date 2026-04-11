@@ -66,8 +66,10 @@ O servico do PostgreSQL possui um `healthcheck` com `pg_isready`.
 
 Esse teste serve para verificar se o banco esta realmente pronto para aceitar conexoes. Isso e util porque um container pode estar iniciado, mas o banco ainda estar em processo interno de subida.
 
+O servico `django` usa `depends_on` com `condition: service_healthy`, garantindo que o container Django so inicia apos o banco estar operacional.
+
 ## Observacao Importante
-O `healthcheck` melhora a observabilidade do servico, mas a protecao pratica principal do ambiente ainda esta no `entrypoint.sh`, que espera o banco responder antes de iniciar o Django.
+O `healthcheck` com `service_healthy` garante que o Django so sobe quando o banco esta pronto. O `entrypoint.sh` mantem o loop `nc -z` como protecao adicional e exibe logs de cada etapa da inicializacao.
 
 ## Diferenca Entre Banco de Teste e Banco Real
 

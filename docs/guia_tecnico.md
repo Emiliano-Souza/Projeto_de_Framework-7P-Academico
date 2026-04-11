@@ -320,7 +320,7 @@ Causa comum:
 
 ## 15. Pontos que Ainda Merecem Evolucao
 
-- separar melhor usuario de devolucao e usuario de baixa
+- separar melhor usuario de devolucao e usuario de baixa: resolvido com campo `usuario_baixa` em `EntregaEPI`
 - decidir se a entrada de lote tera fluxo web proprio ou integracao mais forte com admin
 - tratar estados mais sofisticados da entrega
 - adicionar listagens e dashboards

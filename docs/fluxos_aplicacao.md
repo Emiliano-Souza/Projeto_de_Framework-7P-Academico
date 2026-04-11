@@ -275,7 +275,7 @@ Isso mostra que:
 ## Pontos de Atencao para Evolucao
 
 ### 1. Semantica de usuario de baixa
-Hoje a baixa reutiliza `usuario_devolucao`. Funciona operacionalmente, mas nao e o nome ideal para manutencao futura.
+O campo `usuario_baixa` foi adicionado em `EntregaEPI` para separar o responsavel pela baixa do responsavel pela devolucao. O service `registrar_baixa_epi` agora usa esse campo dedicado.
 
 ### 2. Status da entrega
 O status atual ainda e simples. Se o projeto passar a misturar mais cenarios de devolucao parcial e baixa parcial, talvez seja necessario evoluir:

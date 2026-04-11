@@ -1,0 +1,9 @@
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a class="navbar-brand" href="/admin/">⚙ Admin</a>
+    <a class="nav-link {% if request.path == '/entregas/nova/' %}active{% endif %}" href="{% url 'epi:registrar_entrega' %}">Entrega</a>
+    <a class="nav-link {% if request.path == '/devolucoes/nova/' %}active{% endif %}" href="{% url 'epi:registrar_devolucao' %}">Devolução</a>
+    <a class="nav-link {% if request.path == '/baixas/nova/' %}active{% endif %}" href="{% url 'epi:registrar_baixa' %}">Baixa</a>
+    <a class="nav-link {% if request.path == '/movimentacoes/' %}active{% endif %}" href="{% url 'epi:listar_movimentacoes' %}">Movimentações</a>
+  </div>
+</nav>

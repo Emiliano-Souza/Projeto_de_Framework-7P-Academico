@@ -27,10 +27,11 @@ Essa separacao melhora a organizacao da infraestrutura, facilita manutencao e re
 O fluxo atual de subida do ambiente e o seguinte:
 
 1. O Docker Compose inicia o container do PostgreSQL.
-2. O Docker Compose inicia o container do Django.
-3. O `entrypoint.sh` do Django aguarda o banco aceitar conexao.
-4. O Django executa as migracoes pendentes.
-5. O servidor de desenvolvimento e iniciado na porta `8000`.
+2. O Docker Compose aguarda o healthcheck do banco passar (`pg_isready`).
+3. O Docker Compose inicia o container do Django.
+4. O `entrypoint.sh` do Django aguarda o banco aceitar conexao.
+5. O Django executa as migracoes pendentes.
+6. O servidor de desenvolvimento e iniciado na porta `8000`.
 
 ## Comunicacao Entre Servicos
 Dentro da rede do Docker Compose:

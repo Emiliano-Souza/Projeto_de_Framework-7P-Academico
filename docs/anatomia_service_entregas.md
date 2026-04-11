@@ -383,9 +383,7 @@ Caso de uso publico para encerrar quantidade entregue sem retorno ao estoque.
 - prefixa a observacao com o motivo
 
 ### Observacao tecnica
-Hoje ela reutiliza `usuario_devolucao` para guardar o usuario da baixa.
-
-Isso funciona, mas ainda nao eh o desenho ideal. Futuramente pode virar um campo proprio.
+O campo `usuario_baixa` foi adicionado em `EntregaEPI` para registrar o responsavel pela baixa de forma separada do `usuario_devolucao`. Isso evita sobrescrita indevida do historico de devolucao quando uma baixa e registrada posteriormente.
 
 ## 10. Decisoes Arquiteturais Importantes
 

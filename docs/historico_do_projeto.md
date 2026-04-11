@@ -246,5 +246,15 @@
 - ampliacao dos testes para cobrir entrega com quantidade zero e negativa
 - ajuste da documentacao para refletir a consolidacao das regras do service
 
+## Etapa 36 - Correcoes de Infraestrutura e Dominio
+
+- `docker-compose.yml` atualizado para usar `depends_on: condition: service_healthy` no servico Django
+- `entrypoint.sh` atualizado com logs intermediarios de migrations e subida do servidor
+- `clean()` adicionado em `MovimentacaoEstoque` para validar `quantidade > 0` e `quantidade_depois >= 0` via `full_clean()`
+- campo `usuario_baixa` adicionado em `EntregaEPI` para separar o responsavel pela baixa do responsavel pela devolucao
+- `registrar_baixa_epi` atualizado para usar `usuario_baixa` em vez de `usuario_devolucao`
+- migracao `0009_entrega_epi_usuario_baixa` criada
+- documentacao atualizada para refletir todas as correcoes
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

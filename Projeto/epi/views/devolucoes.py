@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 
 from epi.forms import DevolucaoEPIForm
 from epi.services.entregas import registrar_devolucao_epi
+from epi.views.utils import aplicar_erros_ao_form
 
 
 @login_required
@@ -20,15 +21,7 @@ def registrar_devolucao_view(request):
                 observacao=form.cleaned_data["observacao"],
             )
         except ValidationError as exc:
-            if hasattr(exc, "message_dict"):
-                for field, errors in exc.message_dict.items():
-                    for error in errors:
-                        if field in form.fields:
-                            form.add_error(field, error)
-                        else:
-                            form.add_error(None, error)
-            else:
-                form.add_error(None, exc.message)
+            aplicar_erros_ao_form(exc, form)
         else:
             messages.success(request, "Devolucao registrada com sucesso.")
             return redirect("epi:registrar_devolucao")

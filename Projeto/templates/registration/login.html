@@ -1,24 +1,41 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <title>Entrar</title>
-</head>
-<body>
-  <h1>Entrar</h1>
+{% extends "epi/base.html" %}
 
-  {% if form.errors %}
-    <p>Usuario ou senha invalidos.</p>
-  {% endif %}
+{% block title %}Entrar{% endblock %}
 
-  {% if next %}
-    <p>Faça login para continuar.</p>
-  {% endif %}
+{% block content %}
+  <div style="max-width: 420px; margin: 0 auto;">
+    <section class="panel form-panel">
+      <span class="eyebrow">Sistema de EPIs</span>
+      <h1 style="font-size: 2rem; margin: 12px 0 24px;">Entrar</h1>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Entrar</button>
-  </form>
-</body>
-</html>
+      {% if form.errors %}
+        <ul class="error-list">
+          <li>Usuário ou senha inválidos. Tente novamente.</li>
+        </ul>
+      {% endif %}
+
+      {% if next %}
+        <ul class="error-list">
+          <li>Faça login para continuar.</li>
+        </ul>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="form-grid" style="grid-template-columns: 1fr;">
+          <div class="field-group">
+            <label for="{{ form.username.id_for_label }}">Usuário</label>
+            {{ form.username }}
+          </div>
+          <div class="field-group">
+            <label for="{{ form.password.id_for_label }}">Senha</label>
+            {{ form.password }}
+          </div>
+        </div>
+        <div class="actions" style="justify-content: flex-end; margin-top: 20px;">
+          <button class="button-primary" type="submit">Entrar</button>
+        </div>
+      </form>
+    </section>
+  </div>
+{% endblock %}

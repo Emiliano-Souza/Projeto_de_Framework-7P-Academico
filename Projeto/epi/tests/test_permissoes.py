@@ -5,7 +5,6 @@ from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
 
 from epi.models import EPI, EPILote, EntregaEPI, Funcionario, MovimentacaoEstoque, Setor
 from epi.services.entregas import registrar_entrega_epi

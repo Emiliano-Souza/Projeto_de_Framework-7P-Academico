@@ -1,8 +1,8 @@
 from datetime import date, timedelta
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
 from epi.models import EPI, EPILote, Funcionario, Setor
 from epi.services.entregas import registrar_baixa_epi, registrar_devolucao_epi, registrar_entrega_epi
@@ -36,7 +36,6 @@ class Command(BaseCommand):
             user.save()
             self.stdout.write("  Usuario admin criado (senha: admin)")
 
-        # almoxarife
         almoxarife, created = User.objects.get_or_create(
             username="almoxarife",
             defaults={"is_staff": False, "is_superuser": False},
@@ -44,12 +43,10 @@ class Command(BaseCommand):
         if created:
             almoxarife.set_password("almoxarife")
             almoxarife.save()
-        from django.contrib.auth.models import Group
         grupo_alm, _ = Group.objects.get_or_create(name="Almoxarife")
         almoxarife.groups.set([grupo_alm])
         self.stdout.write("  Usuario almoxarife criado (senha: almoxarife)")
 
-        # gestor
         gestor, created = User.objects.get_or_create(
             username="gestor",
             defaults={"is_staff": False, "is_superuser": False},
@@ -112,7 +109,7 @@ class Command(BaseCommand):
             )
             if ativo:
                 funcionarios.append(f)
-        self.stdout.write(f"  15 funcionarios criados (13 ativos, 2 inativos)")
+        self.stdout.write("  15 funcionarios criados (13 ativos, 2 inativos)")
         return funcionarios
 
     def _criar_epis(self):
@@ -146,9 +143,9 @@ class Command(BaseCommand):
         hoje = date.today()
         dados = [
             (epis[0], "L2024-001", 50, hoje + timedelta(days=365)),
-            (epis[0], "L2023-001", 20, hoje - timedelta(days=30)),   # vencido
+            (epis[0], "L2023-001", 20, hoje - timedelta(days=30)),
             (epis[1], "L2024-002", 100, hoje + timedelta(days=180)),
-            (epis[1], "L2024-003", 30, hoje + timedelta(days=20)),   # proximo do vencimento
+            (epis[1], "L2024-003", 30, hoje + timedelta(days=20)),
             (epis[2], "L2024-004", 40, hoje + timedelta(days=730)),
             (epis[3], "L2024-005", 60, hoje + timedelta(days=500)),
             (epis[4], "L2024-006", 200, hoje + timedelta(days=300)),
@@ -174,8 +171,6 @@ class Command(BaseCommand):
         return lotes
 
     def _criar_entregas_e_operacoes(self, funcionarios, lotes, user):
-        now = timezone.now()
-
         operacoes = [
             (funcionarios[0], lotes[0], 2),
             (funcionarios[1], lotes[0], 1),
@@ -202,7 +197,6 @@ class Command(BaseCommand):
                 )
                 entregas.append(e)
 
-        # devolucao parcial na primeira entrega
         if entregas:
             registrar_devolucao_epi(
                 entrega_id=entregas[0].pk,
@@ -211,7 +205,6 @@ class Command(BaseCommand):
                 observacao="Devolucao via seed de demonstracao",
             )
 
-        # baixa na segunda entrega
         if len(entregas) > 1:
             registrar_baixa_epi(
                 entrega_id=entregas[1].pk,

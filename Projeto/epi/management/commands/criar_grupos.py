@@ -1,8 +1,5 @@
 from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
-
-from epi.models import EPI, EPILote, EntregaEPI, Funcionario, MovimentacaoEstoque, Setor
 
 
 GRUPOS = {

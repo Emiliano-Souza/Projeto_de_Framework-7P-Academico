@@ -1,0 +1,79 @@
+{% extends "epi/base.html" %}
+
+{% block title %}{{ titulo_pagina }}{% endblock %}
+
+{% block content %}
+<section class="hero" style="display:grid;gap:8px;padding:28px;margin-bottom:24px;">
+  <span class="eyebrow">Cadastro</span>
+  <h1>{{ titulo_pagina }}</h1>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <h2>Filtros</h2>
+  </div>
+  <form method="get" style="display:flex;gap:12px;flex-wrap:wrap;padding:0 0 20px;">
+    <input class="form-control" style="max-width:280px;" type="text" name="busca" placeholder="Nome ou matricula..." value="{{ busca }}">
+    <select class="form-control" style="max-width:200px;" name="setor">
+      <option value="">Todos os setores</option>
+      {% for s in setores %}
+        <option value="{{ s.pk }}" {% if setor_id == s.pk|stringformat:"s" %}selected{% endif %}>{{ s.nome }}</option>
+      {% endfor %}
+    </select>
+    <select class="form-control" style="max-width:160px;" name="ativo">
+      <option value="">Todos</option>
+      <option value="1" {% if ativo == "1" %}selected{% endif %}>Ativos</option>
+      <option value="0" {% if ativo == "0" %}selected{% endif %}>Inativos</option>
+    </select>
+    <button class="button-primary" type="submit">Filtrar</button>
+    <a href="{% url 'epi:listar_funcionarios' %}" style="padding:14px;color:var(--muted);text-decoration:none;">Limpar</a>
+  </form>
+
+  {% if funcionarios %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Matricula</th>
+            <th>Nome</th>
+            <th>Setor</th>
+            <th>Cargo</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in funcionarios %}
+            <tr>
+              <td>{{ f.matricula }}</td>
+              <td>{{ f.nome_completo }}</td>
+              <td>{{ f.setor.nome }}</td>
+              <td>{{ f.cargo|default:"-" }}</td>
+              <td>
+                {% if f.ativo %}
+                  <span class="badge devolucao">Ativo</span>
+                {% else %}
+                  <span class="badge baixa">Inativo</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">Nenhum funcionario encontrado.</div>
+  {% endif %}
+</section>
+
+{% if funcionarios.has_other_pages %}
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+    {% if funcionarios.has_previous %}
+      <a href="?page={{ funcionarios.previous_page_number }}&busca={{ busca }}&setor={{ setor_id }}&ativo={{ ativo }}" class="button-primary" style="text-decoration:none;">← Anterior</a>
+    {% endif %}
+    <span style="padding:14px;color:var(--muted);">Página {{ funcionarios.number }} de {{ funcionarios.paginator.num_pages }}</span>
+    {% if funcionarios.has_next %}
+      <a href="?page={{ funcionarios.next_page_number }}&busca={{ busca }}&setor={{ setor_id }}&ativo={{ ativo }}" class="button-primary" style="text-decoration:none;">Próxima →</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

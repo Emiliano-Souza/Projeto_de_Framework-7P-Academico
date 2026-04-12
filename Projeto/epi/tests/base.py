@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.test import TestCase
 
 from epi.models import EPI, EPILote, Funcionario, Setor
@@ -10,6 +11,9 @@ class BaseModelTestCase(TestCase):
             username="tester",
             password="senha-forte-123",
         )
+        grupo, _ = Group.objects.get_or_create(name="Almoxarife")
+        self.user.groups.add(grupo)
+
         self.setor = Setor.objects.create(nome="Producao")
         self.funcionario = Funcionario.objects.create(
             matricula="F001",

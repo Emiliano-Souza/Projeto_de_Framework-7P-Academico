@@ -87,7 +87,8 @@
 
       <div class="actions">
         <a href="{% url 'epi:registrar_devolucao' %}">Voltar para devolucoes</a>
-        <button class="button-primary" type="submit">Salvar baixa</button>
+        <button class="button-primary" type="submit"
+          onclick="return confirm('Confirma a baixa? Esta acao nao retorna itens ao estoque.')">Salvar baixa</button>
       </div>
     </form>
   </section>

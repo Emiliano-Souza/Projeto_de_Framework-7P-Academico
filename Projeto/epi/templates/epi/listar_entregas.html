@@ -1,0 +1,88 @@
+{% extends "epi/base.html" %}
+
+{% block title %}{{ titulo_pagina }}{% endblock %}
+
+{% block content %}
+<section class="hero" style="display:grid;gap:8px;padding:28px;margin-bottom:24px;">
+  <span class="eyebrow">Operacional</span>
+  <h1>{{ titulo_pagina }}</h1>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>Filtros</h2></div>
+  <form method="get" style="display:flex;gap:12px;flex-wrap:wrap;padding:0 0 20px;">
+    <input class="form-control" style="max-width:280px;" type="text" name="busca" placeholder="Funcionario ou EPI..." value="{{ busca }}">
+    <select class="form-control" style="max-width:200px;" name="status">
+      <option value="">Todos os status</option>
+      {% for value, label in status_choices %}
+        <option value="{{ value }}" {% if status == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    <select class="form-control" style="max-width:220px;" name="funcionario">
+      <option value="">Todos os funcionarios</option>
+      {% for f in funcionarios %}
+        <option value="{{ f.pk }}" {% if funcionario_id == f.pk|stringformat:"s" %}selected{% endif %}>{{ f.nome_completo }}</option>
+      {% endfor %}
+    </select>
+    <button class="button-primary" type="submit">Filtrar</button>
+    <a href="{% url 'epi:listar_entregas' %}" style="padding:14px;color:var(--muted);text-decoration:none;">Limpar</a>
+  </form>
+
+  {% if entregas %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Funcionario</th>
+            <th>EPI</th>
+            <th>Lote</th>
+            <th>Entregue</th>
+            <th>Devolvido</th>
+            <th>Baixado</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in entregas %}
+            <tr>
+              <td>{{ e.data_entrega|date:"d/m/Y H:i" }}</td>
+              <td>{{ e.funcionario.nome_completo }}</td>
+              <td>{{ e.epi_lote.epi.nome }}</td>
+              <td>{{ e.epi_lote.numero_lote }}</td>
+              <td>{{ e.quantidade_entregue }}</td>
+              <td>{{ e.quantidade_devolvida }}</td>
+              <td>{{ e.quantidade_baixada }}</td>
+              <td>
+                {% if e.status == 1 %}
+                  <span class="badge entrega">Entregue</span>
+                {% elif e.status == 2 %}
+                  <span class="badge devolucao">Devolvido</span>
+                {% elif e.status == 3 %}
+                  <span class="badge entrada">Parc. Devolvido</span>
+                {% else %}
+                  <span class="badge baixa">{{ e.get_status_display }}</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">Nenhuma entrega encontrada.</div>
+  {% endif %}
+</section>
+
+{% if entregas.has_other_pages %}
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+    {% if entregas.has_previous %}
+      <a href="?page={{ entregas.previous_page_number }}&busca={{ busca }}&status={{ status }}&funcionario={{ funcionario_id }}" class="button-primary" style="text-decoration:none;">← Anterior</a>
+    {% endif %}
+    <span style="padding:14px;color:var(--muted);">Página {{ entregas.number }} de {{ entregas.paginator.num_pages }}</span>
+    {% if entregas.has_next %}
+      <a href="?page={{ entregas.next_page_number }}&busca={{ busca }}&status={{ status }}&funcionario={{ funcionario_id }}" class="button-primary" style="text-decoration:none;">Próxima →</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

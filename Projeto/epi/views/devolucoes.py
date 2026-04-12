@@ -5,10 +5,10 @@ from django.shortcuts import redirect, render
 
 from epi.forms import DevolucaoEPIForm
 from epi.services.entregas import registrar_devolucao_epi
-from epi.views.utils import aplicar_erros_ao_form
+from epi.views.utils import aplicar_erros_ao_form, grupo_required
 
 
-@login_required
+@grupo_required("Administrador", "Almoxarife")
 def registrar_devolucao_view(request):
     form = DevolucaoEPIForm(request.POST or None)
 

@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'epi.context_processors.perfil_usuario',
             ],
         },
     },
@@ -101,7 +102,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = 'epi:registrar_entrega'
+LOGIN_REDIRECT_URL = 'epi:dashboard'
 
 
 import os

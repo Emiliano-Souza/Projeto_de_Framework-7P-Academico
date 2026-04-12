@@ -5,6 +5,7 @@ app_name = "epi"
 
 
 urlpatterns = [
+    path("", include("epi.urls.dashboard")),
     path("", include("epi.urls.entregas")),
     path("", include("epi.urls.devolucoes")),
     path("", include("epi.urls.baixas")),

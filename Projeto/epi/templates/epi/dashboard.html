@@ -1,0 +1,98 @@
+{% extends "epi/base.html" %}
+
+{% block title %}{{ titulo_pagina }}{% endblock %}
+
+{% block content %}
+<section class="hero" style="display:grid;gap:8px;padding:28px;margin-bottom:24px;">
+  <span class="eyebrow">Visao Geral</span>
+  <h1>{{ titulo_pagina }}</h1>
+  <p style="color:var(--muted);margin:0;">Resumo operacional do sistema de gestao de EPIs.</p>
+</section>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px;">
+
+  <div class="panel" style="padding:20px;display:grid;gap:6px;">
+    <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);">Funcionarios Ativos</span>
+    <span style="font-size:2.2rem;font-weight:700;color:var(--primary);">{{ total_funcionarios_ativos }}</span>
+  </div>
+
+  <div class="panel" style="padding:20px;display:grid;gap:6px;">
+    <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);">EPIs Cadastrados</span>
+    <span style="font-size:2.2rem;font-weight:700;color:var(--primary);">{{ total_epis }}</span>
+  </div>
+
+  <div class="panel" style="padding:20px;display:grid;gap:6px;">
+    <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);">Lotes com Saldo</span>
+    <span style="font-size:2.2rem;font-weight:700;color:var(--primary);">{{ total_lotes_ativos }}</span>
+  </div>
+
+  <div class="panel" style="padding:20px;display:grid;gap:6px;">
+    <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);">Entregas Pendentes</span>
+    <span style="font-size:2.2rem;font-weight:700;color:var(--primary);">{{ entregas_pendentes }}</span>
+  </div>
+
+  {% if lotes_vencidos %}
+  <div class="panel" style="padding:20px;display:grid;gap:6px;border-color:rgba(155,28,28,0.3);">
+    <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--error-text);">Lotes Vencidos</span>
+    <span style="font-size:2.2rem;font-weight:700;color:var(--error-text);">{{ lotes_vencidos }}</span>
+  </div>
+  {% endif %}
+
+  {% if lotes_proximos_vencimento %}
+  <div class="panel" style="padding:20px;display:grid;gap:6px;border-color:rgba(180,120,0,0.3);">
+    <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:#92600a;">Vencem em 30 dias</span>
+    <span style="font-size:2.2rem;font-weight:700;color:#92600a;">{{ lotes_proximos_vencimento }}</span>
+  </div>
+  {% endif %}
+
+  {% if lotes_estoque_baixo %}
+  <div class="panel" style="padding:20px;display:grid;gap:6px;border-color:rgba(180,120,0,0.3);">
+    <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:#92600a;">Estoque Abaixo do Minimo</span>
+    <span style="font-size:2.2rem;font-weight:700;color:#92600a;">{{ lotes_estoque_baixo }}</span>
+  </div>
+  {% endif %}
+
+</div>
+
+<section class="panel">
+  <div class="panel-header">
+    <h2>Ultimas Movimentacoes</h2>
+    <a href="{% url 'epi:listar_movimentacoes' %}">Ver historico completo</a>
+  </div>
+
+  {% if ultimas_movimentacoes %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Data/Hora</th>
+            <th>Tipo</th>
+            <th>EPI</th>
+            <th>Lote</th>
+            <th>Qtd.</th>
+            <th>Usuario</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for mov in ultimas_movimentacoes %}
+            <tr>
+              <td>{{ mov.created_at|date:"d/m/Y H:i" }}</td>
+              <td>
+                <span class="badge {{ mov.get_tipo_movimento_display|lower }}">
+                  {{ mov.get_tipo_movimento_display }}
+                </span>
+              </td>
+              <td>{{ mov.epi_lote.epi.nome }}</td>
+              <td>{{ mov.epi_lote.numero_lote }}</td>
+              <td>{{ mov.quantidade }}</td>
+              <td>{{ mov.usuario.username }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">Nenhuma movimentacao registrada ainda.</div>
+  {% endif %}
+</section>
+{% endblock %}

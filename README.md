@@ -16,6 +16,7 @@ O projeto foi desenvolvido com **Django (Python)**, utilizando:
 ## Documentacao
 A documentacao tecnica do projeto esta organizada na pasta `docs/`.
 
+- `docs/como_rodar.md`: tutorial completo para subir o projeto do zero
 - `docs/arquitetura.md`: visao da arquitetura, containers e organizacao do sistema
 - `docs/configuracao_ambiente.md`: como o ambiente local funciona
 - `docs/banco_de_dados.md`: modelagem do banco, decisoes e evolucao das tabelas

@@ -159,6 +159,38 @@ Motivo:
 - segue o padrao nativo de heranca de templates do Django
 - o `login.html` tambem estende o mesmo base, mantendo visual consistente
 
+## 19. Grupos e Permissoes via Decorador Customizado
+Decisao:
+Usar grupos nativos do Django (`Group`) com um decorador `grupo_required` customizado em vez de `@permission_required` por permissao individual.
+
+Motivo:
+
+- mais legivel: `@grupo_required("Almoxarife")` e mais claro que listar permissoes individuais
+- mais facil de manter: adicionar ou remover acesso e feito no grupo, nao no codigo
+- superusuario sempre passa, sem necessidade de atribuir grupos manualmente
+- retorna 403 com template proprio em vez de redirecionar para login
+
+## 20. Context Processor para Perfil do Usuario
+Decisao:
+Injetar `pode_operar` em todos os templates via context processor em vez de verificar grupos diretamente no template.
+
+Motivo:
+
+- templates ficam limpos e sem logica de negocio
+- a regra de quem pode operar fica centralizada em um unico lugar
+- facil de evoluir: basta alterar o context processor
+
+## 21. Seed como Comando Django
+Decisao:
+Implementar os dados de demonstracao como um management command (`python manage.py seed`) em vez de fixture.
+
+Motivo:
+
+- usa os services reais, garantindo que as regras de negocio sejam respeitadas
+- gera movimentacoes de estoque reais junto com os dados
+- idempotente: pode ser rodado multiplas vezes sem duplicar dados
+- mais facil de manter e evoluir do que um arquivo JSON de fixture
+
 ## 12. Manter documentacao tecnica junto da evolucao do codigo
 Decisao:
 Atualizar a documentacao a cada etapa importante do projeto.

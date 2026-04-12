@@ -276,5 +276,33 @@
 - `AUTH_PASSWORD_VALIDATORS` esvaziado para facilitar criacao de usuarios em desenvolvimento
 - documentacao atualizada
 
+## Etapa 39 - Seed de Dados de Demonstracao
+
+- comando `python manage.py seed` criado em `management/commands/seed.py`
+- cria 5 setores, 15 funcionarios (13 ativos, 2 inativos), 8 EPIs, 10 lotes
+- 1 lote vencido e 1 proximo do vencimento para demonstrar alertas
+- 10 entregas, 1 devolucao parcial e 1 baixa
+- usuarios admin, almoxarife e gestor criados com senhas simples
+
+## Etapa 40 - Dashboard
+
+- view `dashboard_view` criada em `views/dashboard.py`
+- rota `""` (raiz) mapeada para o dashboard
+- `LOGIN_REDIRECT_URL` alterado para `epi:dashboard`
+- template `dashboard.html` com cards de indicadores e tabela de ultimas movimentacoes
+- indicadores: funcionarios ativos, EPIs, lotes com saldo, entregas pendentes, lotes vencidos, proximos do vencimento, estoque abaixo do minimo
+- navbar atualizada com link Dashboard
+
+## Etapa 41 - Grupos e Permissoes
+
+- comando `python manage.py criar_grupos` criado em `management/commands/criar_grupos.py`
+- 3 grupos definidos: Administrador (todas as permissoes), Almoxarife (operacoes), Gestor (somente consulta)
+- decorador `grupo_required` criado em `views/utils.py`
+- views de entrega, devolucao e baixa protegidas com `@grupo_required("Administrador", "Almoxarife")`
+- context processor `perfil_usuario` criado em `context_processors.py` injetando `pode_operar`
+- navbar exibe links de operacao condicionalmente via `pode_operar`
+- template `acesso_negado.html` criado para resposta 403
+- seed atualizado para criar usuarios almoxarife e gestor com grupos atribuidos
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

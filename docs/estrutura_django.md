@@ -41,7 +41,7 @@ Trecho relevante:
 
 ```python
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-LOGIN_REDIRECT_URL = "epi:registrar_entrega"
+LOGIN_REDIRECT_URL = "epi:dashboard"
 ```
 
 ### `Projeto/config/urls.py`
@@ -140,36 +140,33 @@ Ela eh a peca mais importante do desenho atual, porque faz a orquestracao de:
 ### `Projeto/epi/views/`
 Views organizadas por dominio funcional:
 
+- `views/dashboard.py`: view do dashboard com indicadores operacionais
 - `views/entregas.py`
 - `views/devolucoes.py`
 - `views/baixas.py`
 - `views/movimentacoes.py`
-- `views/utils.py`: helper `aplicar_erros_ao_form` compartilhado entre as views
+- `views/utils.py`: helper `aplicar_erros_ao_form` e decorador `grupo_required`
 
-Cada view:
-
-- exige autenticacao
-- instancia formulario
-- chama o service correspondente
-- trata `ValidationError` via helper centralizado
-- exibe mensagens de sucesso ou erro
-
-A view de movimentacoes usa `Paginator` do Django para paginar os resultados em 50 itens por pagina.
+As views de entrega, devolucao e baixa usam `@grupo_required("Administrador", "Almoxarife")` para restringir acesso por perfil.
 
 ### `Projeto/epi/urls/`
 Rotas separadas por fluxo:
 
+- `urls/dashboard.py`
 - `urls/entregas.py`
 - `urls/devolucoes.py`
 - `urls/baixas.py`
+- `urls/movimentacoes.py`
 
 Essa separacao evita que um unico arquivo cresca demais conforme o projeto evolui.
 
 ### `Projeto/epi/templates/epi/`
 Templates HTML dos fluxos web:
 
-- `base.html`: template base com estrutura HTML, `{% load static %}`, link do CSS e inclusao da navbar. Todos os outros templates estendem este via `{% extends "epi/base.html" %}`
-- `navbar.html`: componente de navegacao incluido pelo `base.html` via `{% include %}`
+- `base.html`: template base compartilhado
+- `navbar.html`: exibe links condicionalmente com base no perfil via `pode_operar`
+- `dashboard.html`: tela inicial com indicadores operacionais
+- `acesso_negado.html`: tela 403 para acesso sem permissao
 - `registrar_entrega.html`
 - `registrar_devolucao.html`
 - `registrar_baixa.html`
@@ -186,6 +183,26 @@ Os templates atuais:
 Templates de autenticacao do Django:
 
 - `login.html`: estende `epi/base.html` para manter visual consistente com o restante do sistema
+
+### `Projeto/epi/context_processors.py`
+Context processor `perfil_usuario` que injeta `pode_operar` em todos os templates.
+
+- `pode_operar = True` para superusuarios, Administradores e Almoxarifes
+- `pode_operar = False` para Gestores e usuarios sem grupo
+- usado pela navbar para exibir ou ocultar links de operacao
+
+### `Projeto/epi/management/`
+Comandos customizados do Django:
+
+- `management/commands/seed.py`: popula o banco com dados de demonstracao (5 setores, 15 funcionarios, 8 EPIs, 10 lotes, 10 entregas, usuarios admin/almoxarife/gestor)
+- `management/commands/criar_grupos.py`: cria os grupos Administrador, Almoxarife e Gestor com suas permissoes
+
+Execucao:
+
+```powershell
+docker compose exec django python manage.py criar_grupos
+docker compose exec django python manage.py seed
+```
 
 ### `Projeto/epi/tests/`
 Suite de testes separada por responsabilidade:
@@ -238,8 +255,9 @@ Para leitura rapida do codigo, estes sao os pontos mais importantes:
 - `Projeto/epi/models.py`: entidades, constraints e delegacao de persistencia
 - `Projeto/epi/forms.py`: filtros de interface e validacao de entrada
 - `Projeto/epi/services/entregas.py`: regra operacional principal
-- `Projeto/epi/views/`: camada HTTP
-- `Projeto/epi/views/utils.py`: helper de tratamento de ValidationError
+- `Projeto/epi/views/dashboard.py`: indicadores operacionais
+- `Projeto/epi/views/utils.py`: helper de erros e decorador grupo_required
+- `Projeto/epi/context_processors.py`: injeta perfil do usuario nos templates
 - `Projeto/epi/urls/`: agrupamento de rotas por fluxo
 - `Projeto/epi/templates/epi/base.html`: template base compartilhado por todos os templates
 - `Projeto/epi/templates/epi/navbar.html`: componente de navegacao

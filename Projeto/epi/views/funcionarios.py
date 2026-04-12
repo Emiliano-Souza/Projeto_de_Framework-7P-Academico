@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
-from epi.models import Funcionario, Setor
+from epi.models import EntregaEPI, Funcionario, Setor
 
 
 @login_required
@@ -36,4 +36,27 @@ def listar_funcionarios_view(request):
         "busca": busca,
         "setor_id": setor_id,
         "ativo": ativo,
+    })
+
+
+@login_required
+def historico_funcionario_view(request, pk):
+    funcionario = get_object_or_404(Funcionario, pk=pk)
+
+    entregas = list(
+        EntregaEPI.objects.filter(funcionario=funcionario)
+        .select_related("epi_lote__epi", "usuario_entrega")
+        .order_by("-data_entrega")
+    )
+
+    for e in entregas:
+        e.saldo_aberto = e.quantidade_entregue - e.quantidade_devolvida - e.quantidade_baixada
+
+    saldo_aberto_total = sum(e.saldo_aberto for e in entregas)
+
+    return render(request, "epi/historico_funcionario.html", {
+        "titulo_pagina": f"Historico — {funcionario.nome_completo}",
+        "funcionario": funcionario,
+        "entregas": entregas,
+        "saldo_aberto": saldo_aberto_total,
     })

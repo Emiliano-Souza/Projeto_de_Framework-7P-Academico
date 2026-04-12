@@ -1,0 +1,104 @@
+{% extends "epi/base.html" %}
+
+{% block title %}{{ titulo_pagina }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumbs" aria-label="breadcrumb">
+  <a href="{% url 'epi:listar_funcionarios' %}">Funcionários</a>
+  <span>/</span>
+  <span>{{ funcionario.nome_completo }}</span>
+</nav>
+
+<section class="hero" style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;margin-bottom:24px;">
+  <article class="hero-card">
+    <span class="eyebrow">Historico</span>
+    <h1>{{ funcionario.nome_completo }}</h1>
+    <p style="color:var(--muted);margin:0;">
+      {{ funcionario.matricula }} &mdash; {{ funcionario.setor.nome }}
+      {% if funcionario.cargo %} &mdash; {{ funcionario.cargo }}{% endif %}
+    </p>
+  </article>
+
+  <div class="panel" style="padding:24px;display:grid;gap:16px;align-content:start;">
+    <div>
+      <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);">Status</span><br>
+      {% if funcionario.ativo %}
+        <span class="badge devolucao">Ativo</span>
+      {% else %}
+        <span class="badge baixa">Inativo</span>
+      {% endif %}
+    </div>
+    <div>
+      <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);">Total de Entregas</span><br>
+      <strong>{{ entregas|length }}</strong>
+    </div>
+    <div>
+      <span style="font-size:0.82rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);">Itens em Aberto</span><br>
+      <strong {% if saldo_aberto > 0 %}style="color:var(--primary);"{% endif %}>{{ saldo_aberto }}</strong>
+    </div>
+  </div>
+</section>
+
+{% if saldo_aberto > 0 %}
+  <div style="padding:14px 18px;border-radius:14px;background:var(--error-bg);border:1px solid rgba(155,28,28,0.18);color:var(--error-text);margin-bottom:20px;">
+    ⚠ Este funcionario possui <strong>{{ saldo_aberto }} item(ns)</strong> em aberto sem devolucao ou baixa registrada.
+  </div>
+{% endif %}
+
+<section class="panel">
+  <div class="panel-header">
+    <h2>Entregas Registradas</h2>
+  </div>
+
+  {% if entregas %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>EPI</th>
+            <th>Lote</th>
+            <th>Entregue</th>
+            <th>Devolvido</th>
+            <th>Baixado</th>
+            <th>Em Aberto</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in entregas %}
+            <tr>
+              <td>{{ e.data_entrega|date:"d/m/Y H:i" }}</td>
+              <td>{{ e.epi_lote.epi.nome }}</td>
+              <td>{{ e.epi_lote.numero_lote }}</td>
+              <td>{{ e.quantidade_entregue }}</td>
+              <td>{{ e.quantidade_devolvida }}</td>
+              <td>{{ e.quantidade_baixada }}</td>
+              <td>
+                {% if e.saldo_aberto > 0 %}
+                  <strong style="color:var(--primary);">{{ e.saldo_aberto }}</strong>
+                {% else %}
+                  <span class="muted">0</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if e.status == 1 %}
+                  <span class="badge entrega">Entregue</span>
+                {% elif e.status == 2 %}
+                  <span class="badge devolucao">Devolvido</span>
+                {% elif e.status == 3 %}
+                  <span class="badge entrada">Parc. Devolvido</span>
+                {% else %}
+                  <span class="badge baixa">{{ e.get_status_display }}</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">Nenhuma entrega registrada para este funcionario.</div>
+  {% endif %}
+</section>
+{% endblock %}

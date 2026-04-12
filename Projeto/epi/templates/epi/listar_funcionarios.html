@@ -45,7 +45,7 @@
           {% for f in funcionarios %}
             <tr>
               <td>{{ f.matricula }}</td>
-              <td>{{ f.nome_completo }}</td>
+              <td><a href="{% url 'epi:historico_funcionario' f.pk %}" style="color:var(--primary);font-weight:600;">{{ f.nome_completo }}</a></td>
               <td>{{ f.setor.nome }}</td>
               <td>{{ f.cargo|default:"-" }}</td>
               <td>

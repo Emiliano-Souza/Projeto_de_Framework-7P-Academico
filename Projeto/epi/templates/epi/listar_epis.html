@@ -1,0 +1,75 @@
+{% extends "epi/base.html" %}
+
+{% block title %}{{ titulo_pagina }}{% endblock %}
+
+{% block content %}
+<section class="hero" style="display:grid;gap:8px;padding:28px;margin-bottom:24px;">
+  <span class="eyebrow">Cadastro</span>
+  <h1>{{ titulo_pagina }}</h1>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>Filtros</h2></div>
+  <form method="get" style="display:flex;gap:12px;flex-wrap:wrap;padding:0 0 20px;">
+    <input class="form-control" style="max-width:280px;" type="text" name="busca" placeholder="Nome ou codigo..." value="{{ busca }}">
+    <select class="form-control" style="max-width:160px;" name="ativo">
+      <option value="">Todos</option>
+      <option value="1" {% if ativo == "1" %}selected{% endif %}>Ativos</option>
+      <option value="0" {% if ativo == "0" %}selected{% endif %}>Inativos</option>
+    </select>
+    <button class="button-primary" type="submit">Filtrar</button>
+    <a href="{% url 'epi:listar_epis' %}" style="padding:14px;color:var(--muted);text-decoration:none;">Limpar</a>
+  </form>
+
+  {% if epis %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Codigo</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Fabricante</th>
+            <th>CA</th>
+            <th>Estoque Minimo</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in epis %}
+            <tr>
+              <td>{{ e.codigo_interno }}</td>
+              <td>{{ e.nome }}</td>
+              <td>{{ e.categoria|default:"-" }}</td>
+              <td>{{ e.fabricante|default:"-" }}</td>
+              <td>{{ e.numero_ca|default:"-" }}</td>
+              <td>{{ e.estoque_minimo }}</td>
+              <td>
+                {% if e.ativo %}
+                  <span class="badge devolucao">Ativo</span>
+                {% else %}
+                  <span class="badge baixa">Inativo</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">Nenhum EPI encontrado.</div>
+  {% endif %}
+</section>
+
+{% if epis.has_other_pages %}
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+    {% if epis.has_previous %}
+      <a href="?page={{ epis.previous_page_number }}&busca={{ busca }}&ativo={{ ativo }}" class="button-primary" style="text-decoration:none;">← Anterior</a>
+    {% endif %}
+    <span style="padding:14px;color:var(--muted);">Página {{ epis.number }} de {{ epis.paginator.num_pages }}</span>
+    {% if epis.has_next %}
+      <a href="?page={{ epis.next_page_number }}&busca={{ busca }}&ativo={{ ativo }}" class="button-primary" style="text-decoration:none;">Próxima →</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

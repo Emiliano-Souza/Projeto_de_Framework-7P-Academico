@@ -1,0 +1,86 @@
+{% extends "epi/base.html" %}
+
+{% block title %}{{ titulo_pagina }}{% endblock %}
+
+{% block content %}
+<section class="hero" style="display:grid;gap:8px;padding:28px;margin-bottom:24px;">
+  <span class="eyebrow">Estoque</span>
+  <h1>{{ titulo_pagina }}</h1>
+</section>
+
+<section class="panel">
+  <div class="panel-header"><h2>Filtros</h2></div>
+  <form method="get" style="display:flex;gap:12px;flex-wrap:wrap;padding:0 0 20px;">
+    <input class="form-control" style="max-width:280px;" type="text" name="busca" placeholder="Lote ou EPI..." value="{{ busca }}">
+    <select class="form-control" style="max-width:180px;" name="situacao">
+      <option value="">Todas as situacoes</option>
+      <option value="disponivel" {% if situacao == "disponivel" %}selected{% endif %}>Com saldo</option>
+      <option value="zerado" {% if situacao == "zerado" %}selected{% endif %}>Zerado</option>
+      <option value="vencido" {% if situacao == "vencido" %}selected{% endif %}>Vencido</option>
+    </select>
+    <button class="button-primary" type="submit">Filtrar</button>
+    <a href="{% url 'epi:listar_lotes' %}" style="padding:14px;color:var(--muted);text-decoration:none;">Limpar</a>
+  </form>
+
+  {% if lotes %}
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Lote</th>
+            <th>EPI</th>
+            <th>Validade</th>
+            <th>Recebido</th>
+            <th>Disponivel</th>
+            <th>Situacao</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for l in lotes %}
+            <tr>
+              <td>{{ l.numero_lote }}</td>
+              <td>{{ l.epi.nome }}</td>
+              <td>
+                {% if l.data_validade %}
+                  {% if l.data_validade < hoje %}
+                    <span style="color:var(--error-text);font-weight:700;">{{ l.data_validade|date:"d/m/Y" }}</span>
+                  {% else %}
+                    {{ l.data_validade|date:"d/m/Y" }}
+                  {% endif %}
+                {% else %}
+                  <span class="muted">-</span>
+                {% endif %}
+              </td>
+              <td>{{ l.quantidade_recebida }}</td>
+              <td>{{ l.quantidade_disponivel }}</td>
+              <td>
+                {% if l.data_validade and l.data_validade < hoje %}
+                  <span class="badge baixa">Vencido</span>
+                {% elif l.quantidade_disponivel == 0 %}
+                  <span class="badge baixa">Zerado</span>
+                {% else %}
+                  <span class="badge devolucao">Disponivel</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">Nenhum lote encontrado.</div>
+  {% endif %}
+</section>
+
+{% if lotes.has_other_pages %}
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:24px;">
+    {% if lotes.has_previous %}
+      <a href="?page={{ lotes.previous_page_number }}&busca={{ busca }}&situacao={{ situacao }}" class="button-primary" style="text-decoration:none;">← Anterior</a>
+    {% endif %}
+    <span style="padding:14px;color:var(--muted);">Página {{ lotes.number }} de {{ lotes.paginator.num_pages }}</span>
+    {% if lotes.has_next %}
+      <a href="?page={{ lotes.next_page_number }}&busca={{ busca }}&situacao={{ situacao }}" class="button-primary" style="text-decoration:none;">Próxima →</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

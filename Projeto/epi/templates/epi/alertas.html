@@ -1,0 +1,15 @@
+{% if alertas %}
+  <div style="display:grid;gap:10px;margin-bottom:24px;">
+    {% for alerta in alertas %}
+      <div style="padding:14px 18px;border-radius:14px;
+        {% if alerta.tipo == 'erro' %}
+          background:var(--error-bg);border:1px solid rgba(155,28,28,0.18);color:var(--error-text);
+        {% else %}
+          background:#fffbeb;border:1px solid rgba(180,120,0,0.25);color:#92600a;
+        {% endif %}
+      ">
+        {{ alerta.icone }} {{ alerta.mensagem }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}

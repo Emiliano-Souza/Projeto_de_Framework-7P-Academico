@@ -320,5 +320,17 @@
 - alertas exibidos no topo do dashboard via `{% include "epi/alertas.html" %}`
 - historico do funcionario exibe alerta quando ha itens em aberto
 
+## Etapa 44 - Confirmacao em Acoes Criticas
+
+- botao de salvar baixa recebe `onclick="return confirm(...)"` para exigir confirmacao antes de submeter
+- confirmacao especifica para baixa pois e a operacao mais irreversivel do sistema
+
+## Etapa 45 - Testes de Permissao e Transacao com Erro
+
+- `tests/base.py` atualizado para adicionar grupo `Almoxarife` ao usuario de teste, compatibilizando com `grupo_required`
+- `tests/test_permissoes.py` criado com dois grupos de testes:
+  - `PermissaoViewTests`: valida que Gestor e usuario sem grupo recebem 403 nas views de operacao, que Almoxarife acessa normalmente, que usuario nao autenticado e redirecionado, e que Gestor acessa dashboard e movimentacoes
+  - `TransacaoComErroTests`: valida que erros na entrega nao alteram lote, nao criam movimentacao, nao criam entrega, e que erro simulado no banco faz rollback completo via `transaction.atomic()`
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

@@ -124,7 +124,6 @@ Os testes ja garantem que:
 ## O Que Ainda Pode Ser Testado no Futuro
 Melhorias possiveis para a suite:
 
-- testes especificos para criacao automatica de movimentacao de entrada
 - testes de concorrencia e cenarios mais avancados de transacao
 - testes do admin
 - testes de integracao de fluxos completos

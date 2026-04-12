@@ -218,14 +218,14 @@ docker compose exec django python manage.py seed
 ### `Projeto/epi/tests/`
 Suite de testes separada por responsabilidade:
 
-- cadastros
-- lotes
-- entrada e saida
-- movimentacoes
-- formularios
-- views
-
-Essa organizacao ajuda a manter cobertura tecnica sem concentrar tudo em um unico arquivo.
+- `base.py`: setup compartilhado — usuario com grupo Almoxarife, setor, funcionario, EPI e lote
+- `test_cadastros.py`: unicidade e comportamento de PROTECT
+- `test_lotes.py`: integridade de lotes e service de entrada
+- `test_entrada_saida.py`: regras centrais de entrega, devolucao e baixa
+- `test_movimentacoes.py`: integridade da auditoria
+- `test_forms.py`: filtros e validacao de formularios
+- `test_views.py`: autenticacao, renderizacao e submissao web
+- `test_permissoes.py`: permissoes por grupo e rollback de transacao com erro
 
 ### `Projeto/epi/static/epi/`
 Arquivos estaticos da app:

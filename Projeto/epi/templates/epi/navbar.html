@@ -2,10 +2,14 @@
   <div class="navbar-inner">
     <a class="navbar-brand" href="{% url 'epi:dashboard' %}">⚙ EPIs</a>
     <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'epi:dashboard' %}">Dashboard</a>
+    <a class="nav-link {% if request.path == '/funcionarios/' %}active{% endif %}" href="{% url 'epi:listar_funcionarios' %}">Funcionários</a>
+    <a class="nav-link {% if request.path == '/epis/' %}active{% endif %}" href="{% url 'epi:listar_epis' %}">EPIs</a>
+    <a class="nav-link {% if request.path == '/lotes/' %}active{% endif %}" href="{% url 'epi:listar_lotes' %}">Lotes</a>
+    <a class="nav-link {% if request.path == '/entregas/' %}active{% endif %}" href="{% url 'epi:listar_entregas' %}">Entregas</a>
     {% if pode_operar %}
-      <a class="nav-link {% if request.path == '/entregas/nova/' %}active{% endif %}" href="{% url 'epi:registrar_entrega' %}">Entrega</a>
-      <a class="nav-link {% if request.path == '/devolucoes/nova/' %}active{% endif %}" href="{% url 'epi:registrar_devolucao' %}">Devolução</a>
-      <a class="nav-link {% if request.path == '/baixas/nova/' %}active{% endif %}" href="{% url 'epi:registrar_baixa' %}">Baixa</a>
+      <a class="nav-link {% if request.path == '/entregas/nova/' %}active{% endif %}" href="{% url 'epi:registrar_entrega' %}">+ Entrega</a>
+      <a class="nav-link {% if request.path == '/devolucoes/nova/' %}active{% endif %}" href="{% url 'epi:registrar_devolucao' %}">+ Devolução</a>
+      <a class="nav-link {% if request.path == '/baixas/nova/' %}active{% endif %}" href="{% url 'epi:registrar_baixa' %}">+ Baixa</a>
     {% endif %}
     <a class="nav-link {% if request.path == '/movimentacoes/' %}active{% endif %}" href="{% url 'epi:listar_movimentacoes' %}">Movimentações</a>
     {% if request.user.is_staff %}

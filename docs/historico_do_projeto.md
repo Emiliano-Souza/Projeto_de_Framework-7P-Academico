@@ -304,5 +304,21 @@
 - template `acesso_negado.html` criado para resposta 403
 - seed atualizado para criar usuarios almoxarife e gestor com grupos atribuidos
 
+## Etapa 42 - Historico por Funcionario
+
+- view `historico_funcionario_view` adicionada em `views/funcionarios.py`
+- rota `/funcionarios/<pk>/` adicionada em `urls/funcionarios.py`
+- template `historico_funcionario.html` com dados do funcionario, resumo de itens em aberto e tabela de entregas
+- saldo em aberto calculado por entrega na view e exibido no template
+- alerta visual quando funcionario possui itens em aberto
+- nome do funcionario na listagem virou link para o historico
+
+## Etapa 43 - Alertas Visuais
+
+- template parcial `alertas.html` criado como componente reutilizavel
+- dashboard atualizado para gerar lista de alertas: lotes vencidos (erro), proximos do vencimento (aviso) e estoque abaixo do minimo (aviso)
+- alertas exibidos no topo do dashboard via `{% include "epi/alertas.html" %}`
+- historico do funcionario exibe alerta quando ha itens em aberto
+
 ## Uso Deste Documento
 Este arquivo deve ser atualizado a cada etapa relevante para manter o registro da evolucao tecnica e funcional do projeto.

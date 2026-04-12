@@ -140,11 +140,14 @@ Ela eh a peca mais importante do desenho atual, porque faz a orquestracao de:
 ### `Projeto/epi/views/`
 Views organizadas por dominio funcional:
 
-- `views/dashboard.py`: view do dashboard com indicadores operacionais
-- `views/entregas.py`
-- `views/devolucoes.py`
-- `views/baixas.py`
-- `views/movimentacoes.py`
+- `views/dashboard.py`: view do dashboard com indicadores e alertas operacionais
+- `views/funcionarios.py`: listagem de funcionarios e historico por funcionario
+- `views/epis.py`: listagem de EPIs e listagem de lotes
+- `views/entregas.py`: formulario de registro de entrega
+- `views/entregas_lista.py`: listagem de entregas com filtros
+- `views/devolucoes.py`: formulario de registro de devolucao
+- `views/baixas.py`: formulario de registro de baixa
+- `views/movimentacoes.py`: historico paginado de movimentacoes
 - `views/utils.py`: helper `aplicar_erros_ao_form` e decorador `grupo_required`
 
 As views de entrega, devolucao e baixa usam `@grupo_required("Administrador", "Almoxarife")` para restringir acesso por perfil.
@@ -152,11 +155,13 @@ As views de entrega, devolucao e baixa usam `@grupo_required("Administrador", "A
 ### `Projeto/epi/urls/`
 Rotas separadas por fluxo:
 
-- `urls/dashboard.py`
-- `urls/entregas.py`
-- `urls/devolucoes.py`
-- `urls/baixas.py`
-- `urls/movimentacoes.py`
+- `urls/dashboard.py`: rota raiz `""`
+- `urls/funcionarios.py`: `/funcionarios/` e `/funcionarios/<pk>/`
+- `urls/epis.py`: `/epis/` e `/lotes/`
+- `urls/entregas.py`: `/entregas/nova/` e `/entregas/`
+- `urls/devolucoes.py`: `/devolucoes/nova/`
+- `urls/baixas.py`: `/baixas/nova/`
+- `urls/movimentacoes.py`: `/movimentacoes/`
 
 Essa separacao evita que um unico arquivo cresca demais conforme o projeto evolui.
 
@@ -165,8 +170,14 @@ Templates HTML dos fluxos web:
 
 - `base.html`: template base compartilhado
 - `navbar.html`: exibe links condicionalmente com base no perfil via `pode_operar`
-- `dashboard.html`: tela inicial com indicadores operacionais
+- `alertas.html`: componente reutilizavel de alertas visuais (erro/aviso)
+- `dashboard.html`: tela inicial com indicadores operacionais e alertas
 - `acesso_negado.html`: tela 403 para acesso sem permissao
+- `listar_funcionarios.html`: listagem com busca e filtros
+- `historico_funcionario.html`: historico de entregas por funcionario com alerta de itens em aberto
+- `listar_epis.html`: listagem de EPIs com busca e filtros
+- `listar_lotes.html`: listagem de lotes com destaque para vencidos
+- `listar_entregas.html`: listagem de entregas com busca e filtros
 - `registrar_entrega.html`
 - `registrar_devolucao.html`
 - `registrar_baixa.html`
@@ -255,9 +266,13 @@ Para leitura rapida do codigo, estes sao os pontos mais importantes:
 - `Projeto/epi/models.py`: entidades, constraints e delegacao de persistencia
 - `Projeto/epi/forms.py`: filtros de interface e validacao de entrada
 - `Projeto/epi/services/entregas.py`: regra operacional principal
-- `Projeto/epi/views/dashboard.py`: indicadores operacionais
+- `Projeto/epi/views/dashboard.py`: indicadores e alertas operacionais
+- `Projeto/epi/views/funcionarios.py`: listagem e historico por funcionario
+- `Projeto/epi/views/epis.py`: listagem de EPIs e lotes
+- `Projeto/epi/views/entregas_lista.py`: listagem de entregas
 - `Projeto/epi/views/utils.py`: helper de erros e decorador grupo_required
 - `Projeto/epi/context_processors.py`: injeta perfil do usuario nos templates
+- `Projeto/epi/templates/epi/alertas.html`: componente de alertas reutilizavel
 - `Projeto/epi/urls/`: agrupamento de rotas por fluxo
 - `Projeto/epi/templates/epi/base.html`: template base compartilhado por todos os templates
 - `Projeto/epi/templates/epi/navbar.html`: componente de navegacao

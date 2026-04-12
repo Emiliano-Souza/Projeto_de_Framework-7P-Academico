@@ -67,6 +67,11 @@ Abra o navegador em `http://localhost:8000` e faca login com um dos usuarios aba
 | Rota | Descricao | Acesso |
 |---|---|---|
 | `http://localhost:8000/` | Dashboard | Todos |
+| `http://localhost:8000/funcionarios/` | Listagem de funcionarios | Todos |
+| `http://localhost:8000/funcionarios/<id>/` | Historico do funcionario | Todos |
+| `http://localhost:8000/epis/` | Listagem de EPIs | Todos |
+| `http://localhost:8000/lotes/` | Listagem de lotes | Todos |
+| `http://localhost:8000/entregas/` | Listagem de entregas | Todos |
 | `http://localhost:8000/entregas/nova/` | Registrar entrega | Administrador, Almoxarife |
 | `http://localhost:8000/devolucoes/nova/` | Registrar devolucao | Administrador, Almoxarife |
 | `http://localhost:8000/baixas/nova/` | Registrar baixa | Administrador, Almoxarife |

@@ -321,18 +321,46 @@ docker compose exec django python manage.py test
 ### Dashboard
 Tela inicial com indicadores operacionais: funcionarios ativos, EPIs cadastrados, lotes com saldo, entregas pendentes e alertas de lotes vencidos ou proximos do vencimento.
 
+![Dashboard](docs/prints/dashboard.png)
+
 ### Listagens
 - Funcionarios com busca por nome e matricula, filtro por setor e status
+
+![Listagem de Funcionarios](docs/prints/listagem-funcionarios.png)
+
 - Historico completo de entregas por funcionario
+
+![Historico de Entregas](docs/prints/historico-entregas.png)
+
 - EPIs com busca e filtro por status
+
+![Listagem de EPIs](docs/prints/listagem-epis.png)
+
 - Lotes com destaque visual para lotes vencidos
+
+![Listagem de Lotes](docs/prints/listagem-lotes.png)
+
 - Entregas com filtro por status e funcionario
+
+![Listagem de Entregas](docs/prints/listagem-entregas.png)
+
 - Historico de movimentacoes de estoque paginado
 
+![Movimentacoes de Estoque](docs/prints/movimentacoes-estoque.png)
+
 ### Operacoes (Almoxarife e Administrador)
+
 - Registrar entrega de EPI para funcionario
+
+![Entrega de EPI](docs/prints/entrega-epi.png)
+
 - Registrar devolucao parcial ou total
+
+![Devolucao de EPI](docs/prints/devolucao-epi.png)
+
 - Registrar baixa com motivo (danificado, extraviado, vencido, descartado)
+
+![Baixa de EPI](docs/prints/baixa-epi.png)
 
 ### Cadastro, Edicao e Exclusao (Admin nativo)
 Acesse `http://localhost:8000/admin/` com o usuario `admin` para gerenciar:
@@ -343,11 +371,34 @@ Acesse `http://localhost:8000/admin/` com o usuario `admin` para gerenciar:
 - Entregas
 - Movimentacoes
 
+#### Cadastro
+
+![Cadastro no Admin](docs/prints/admin-cadastro.png)
+
+#### Edicao e Exclusao
+
+![Edicao e Exclusao no Admin](docs/prints/admin-edicao-exclusao.png)
+
 ### Autenticacao e Permissoes
 - Login/logout com sessao de 1 hora
+
+![Tela de Login](docs/prints/login.png)
+
 - 3 perfis: Administrador, Almoxarife e Gestor
-- Tela de acesso negado (403) para rotas restritas
 - Navbar adaptada ao perfil do usuario
+
+
+![Perfil do Admin](docs/prints/perfis-admin.png)
+
+![Perfil do Almoxarife](docs/prints/perfis-almoxarife.png)
+
+![Perfil do Gestor](docs/prints/perfis-gestor.png)
+
+- Tela de acesso negado (403) para rotas restritas
+
+![Tela 403](docs/prints/acesso-negado.png)
+
+
 
 ---
 
